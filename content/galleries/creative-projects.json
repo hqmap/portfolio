@@ -1,0 +1,28 @@
+{
+  "en": {
+    "cover": "harbour",
+    "works": [
+      {
+        "artwork": "harbour"
+      },
+      {
+        "artwork": "lake-detail"
+      }
+    ],
+    "title": "Creative Projects",
+    "description": "Travel journals and experiments on paper."
+  },
+  "de": {
+    "cover": "harbour",
+    "works": [
+      {
+        "artwork": "harbour"
+      },
+      {
+        "artwork": "lake-detail"
+      }
+    ],
+    "title": "Künstlerische Projekte",
+    "description": "Reisetagebücher und Experimente auf Papier."
+  }
+}

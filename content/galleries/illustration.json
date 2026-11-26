@@ -1,0 +1,40 @@
+{
+  "en": {
+    "cover": "alpine-water",
+    "works": [
+      {
+        "artwork": "alpine-water"
+      },
+      {
+        "artwork": "stem-study"
+      },
+      {
+        "artwork": "lake-detail"
+      },
+      {
+        "artwork": "harbour"
+      }
+    ],
+    "title": "Illustration",
+    "description": "Field sketches and painted observations, from mountain water to the smallest stem."
+  },
+  "de": {
+    "cover": "alpine-water",
+    "works": [
+      {
+        "artwork": "alpine-water"
+      },
+      {
+        "artwork": "stem-study"
+      },
+      {
+        "artwork": "lake-detail"
+      },
+      {
+        "artwork": "harbour"
+      }
+    ],
+    "title": "Illustration",
+    "description": "Skizzen und gemalte Beobachtungen, vom Bergsee bis zum kleinsten Stängel."
+  }
+}
