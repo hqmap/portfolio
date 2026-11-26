@@ -232,7 +232,7 @@ Mobile layout:
 
 Clicking anywhere within a category preview opens the corresponding gallery page.
 
-The artist can choose an artwork by its stable ID or select or upload a dedicated cover image through the CMS. The selection is shared by both languages and used on the Portfolio overview and in Selected Collections. A dedicated image takes precedence. If the selection is unavailable, the first available gallery artwork becomes the cover. An empty category remains accessible from its labeled preview.
+The artist can choose an artwork by its stable ID or select or upload a dedicated cover image through the CMS. The selection is shared by both languages and used on the Portfolio overview and in Selected Collections. A dedicated image takes precedence. If the dedicated file is unavailable, the site tries the cover artwork. If that reference is unavailable, it uses the first available gallery work. An empty category remains accessible from its labeled preview.
 
 ### 5.3. Category gallery pages
 

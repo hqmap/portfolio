@@ -20,7 +20,7 @@ Open the production [Content Manager](https://hqmap.github.io/portfolio/admin/) 
 
 1. In **Artwork Library**, create an artwork and upload or select an image. The ID is generated automatically. The title, medium, year, physical dimensions, description and alt text can be left blank. Add English and German descriptions and alt text in their respective locales.
 2. In **Portfolio Galleries & Covers**, open a gallery and choose **Add Artwork** under **Artwork order**. Select a work by title or image filename. In the English pane, drag the list item handles or use the move controls. The German pane follows the same order. A work can appear in multiple galleries.
-3. In the same gallery entry, choose **Cover artwork** or select or upload a **Dedicated cover image**. A dedicated image takes precedence. Clearing that field returns the preview to the selected artwork. If the selected image is unavailable, the first available gallery work supplies the cover.
+3. In the same gallery entry, choose **Cover artwork** or select or upload a **Dedicated cover image**. A dedicated image takes precedence. Clearing that field returns the preview to the selected artwork. If the dedicated file is unavailable, the site tries the cover artwork. If that reference is unavailable, it uses the first available gallery work.
 4. In **Website Pages → Homepage**, change **Featured artwork**. The artwork selection is shared. If the selection is missing, the page uses the first available work in the library.
 5. In **Services & Commissions**, add the English and German titles and descriptions and choose a cover. Add optional photographs with translated captions and alt text. Use the collection's reorder control to change the sequence shown on the public overview. An inquiry requires a destination and a label for the language where it should appear.
 6. Edit the biography, contact details and other overview copy under **Website Pages**. Manage posts under **News Articles** and the name and navigation labels under **Website Settings**. Use **Assets** to browse uploaded images.
@@ -40,7 +40,7 @@ See [Sveltia's GitHub backend instructions](https://sveltiacms.app/docs/backends
 
 ## Content files
 
-The CMS uses `single_file` internationalization. A page file contains `{"en": {...}, "de": {...}}`. Each entry in an artwork, service or news array uses the same shape. The CMS copies fields marked `duplicate` from English to German on save. The public site reads shared values from English and translated fields from the selected locale. Blank optional captions stay blank in that language.
+The CMS uses `single_file` internationalization. A page file contains `{"en": {...}, "de": {...}}`. Each entry in an artwork, service or news array uses the same shape. The CMS copies fields marked `duplicate` from English to German. The service photo list synchronizes its images and order from either locale. The public site reads shared values from English and translated fields from the selected locale. Blank optional captions stay blank in that language.
 
 | File | Shape and relationships |
 |---|---|

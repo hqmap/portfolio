@@ -184,11 +184,11 @@ collections:
         label: Photographs
         label_singular: Photograph
         widget: list
-        i18n: duplicate
+        i18n: sync
         required: false
         collapsed: true
         fields:
-          - {<<: *optional-image, label: Photograph, required: true}
+          - {<<: *optional-image, label: Photograph, i18n: sync, required: true}
           - *caption
           - *alt
       - {name: inquiryUrl, label: Inquiry link, widget: string, i18n: duplicate, required: false, hint: 'Use contact.html, a full web address or a mailto link.'}
