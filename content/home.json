@@ -1,23 +1,14 @@
 {
-  "label": {
-    "en": "Watercolor & illustration",
-    "de": "Aquarell & Illustration"
+  "en": {
+    "featured": "alpine-water",
+    "pageTitle": "Watercolor & illustration",
+    "selected": "Selected collections",
+    "portfolioLink": "View portfolio"
   },
-  "heading": {
-    "en": "A world in",
-    "de": "Eine Welt in"
-  },
-  "emphasis": {
-    "en": "watercolor.",
-    "de": "Aquarell."
-  },
-  "intro": {
-    "en": "I’m Clara, an artist working on paper. My paintings follow the quiet details of landscapes, people, and the natural world.",
-    "de": "Ich bin Clara und arbeite auf Papier. In meinen Bildern folge ich den leisen Details von Landschaften, Menschen und der Natur."
-  },
-  "featured": "alpine-water",
-  "selected": {
-    "en": "Selected collections",
-    "de": "Ausgewählte Sammlungen"
+  "de": {
+    "featured": "alpine-water",
+    "pageTitle": "Aquarell & Illustration",
+    "selected": "Ausgewählte Sammlungen",
+    "portfolioLink": "Zum Portfolio"
   }
 }

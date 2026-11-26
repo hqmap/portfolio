@@ -1,158 +1,274 @@
-const root = new URL('../', import.meta.url);
+import {
+  artwork, contentLink, el, items, language, load, localized, mediaUrl, picture, query,
+  richText, shared, text, ui, url
+} from './content.js';
+import {renderArtworkSet} from './gallery.js';
+
 const page = document.body.dataset.page;
-const query = new URLSearchParams(location.search);
-let preference;
-try { preference = localStorage.getItem('catalogue-language'); } catch {}
-const language = [query.get('lang'), preference, navigator.language.split('-')[0]].find(value => ['en','de'].includes(value)) || 'en';
-try { localStorage.setItem('catalogue-language', language); } catch {}
-document.documentElement.lang = language;
-const t = field => field[language];
-const ui = (en, de) => language === 'de' ? de : en;
-
-function el(tag, attrs = {}, ...children) {
-  const node = document.createElement(tag);
-  for (const [key, value] of Object.entries(attrs)) {
-    if (value !== undefined) node.setAttribute(key, value);
-  }
-  node.append(...children);
-  return node;
-}
-
-async function load(name) {
-  const response = await fetch(new URL('content/' + name + '.json', root));
-  if (!response.ok) throw Error(response.statusText);
-  return response.json();
-}
-
-function url(path, params = {}) {
-  const target = new URL(path + '.html', root);
-  target.search = new URLSearchParams({lang: language, ...params});
-  return target.href;
-}
-
-const arrow = (diagonal = false) => el('span', {class:'arrow', 'aria-hidden':'true'}, diagonal ? '↗' : '→');
-const link = (path, label, style = '') => el('a', {href:url(path), class:style}, label, arrow());
 const main = document.querySelector('main');
+const galleryIds = ['design', 'illustration', 'portraits', 'creative-projects'];
+const entryId = query.get('id');
 
-async function render() {
-  const [settings, home, works, collections, pages, articles] = await Promise.all(
-    ['settings','home','artworks','collections','pages','news'].map(load)
-  );
-  const collection = collections.find(item => item.id === page);
-  const article = articles.find(item => item.id === query.get('id'));
-  const active = collection ? 'portfolio' : page === 'article' ? 'news' : page;
-  const nav = el('nav', {id:'navigation', 'aria-label':ui('Main navigation','Hauptnavigation')});
-  for (const [id, title] of Object.entries(settings.navigation)) {
-    nav.append(el('a', {href:url(id), 'aria-current':active === id ? 'page' : undefined}, t(title)));
+const link = (path, label, className) => el('a', {href: url(path), class: className}, label);
+const back = (path, label) => link(path, '← ' + label, 'back');
+
+function renderChrome(settings, contact, active) {
+  const navigation = localized(settings).navigation;
+  const nav = el('nav', {id: 'navigation', 'aria-label': ui('Main navigation', 'Hauptnavigation')});
+  for (const id of ['portfolio', 'services', 'about', 'news', 'contact']) {
+    nav.append(el('a', {href: url(id), 'aria-current': active === id ? 'page' : undefined}, navigation[id]));
   }
-  const languages = el('div', {class:'languages'});
-  for (const code of ['en','de']) {
+
+  const languages = el('div', {class: 'languages'});
+  for (const code of ['en', 'de']) {
     const target = new URL(location.href);
     target.searchParams.set('lang', code);
-    if (code === 'de') languages.append(el('span', {'aria-hidden':'true'}, '/'));
-    languages.append(el('a', {href:target.href, lang:code, hreflang:code, 'aria-label':code === 'en' ? 'English' : 'Deutsch', 'aria-current':language === code ? 'true' : undefined}, code.toUpperCase()));
+    if (code === 'de') languages.append(el('span', {'aria-hidden': 'true'}, '/'));
+    languages.append(el('a', {
+      href: target.href, lang: code, hreflang: code, 'aria-label': code === 'en' ? 'English' : 'Deutsch',
+      'aria-current': language === code ? 'true' : undefined
+    }, code.toUpperCase()));
   }
-  const menu = el('button', {class:'menu', 'aria-controls':'navigation', 'aria-expanded':'false'}, 'Men' + ui('u','ü'), el('i', {'aria-hidden':'true'}));
+  const menu = el('button', {type: 'button', class: 'menu', 'aria-controls': 'navigation',
+    'aria-expanded': 'false'}, ui('Menu', 'Menü'), el('i', {'aria-hidden': 'true'}));
   function toggle(open) {
     menu.setAttribute('aria-expanded', String(open));
     nav.classList.toggle('open', open);
   }
-  menu.onclick = () => toggle(menu.getAttribute('aria-expanded') === 'false');
-  document.addEventListener('keydown', e => {
-    if (e.key === 'Escape' && nav.classList.contains('open')) { toggle(false); menu.focus(); }
+  menu.addEventListener('click', () => toggle(menu.getAttribute('aria-expanded') === 'false'));
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && nav.classList.contains('open') && !document.querySelector('dialog[open]')) {
+      toggle(false);
+      menu.focus();
+    }
   });
-  const brand = () => el('a', {class:'brand',href:url('index')}, settings.artist);
-  document.querySelector('header').append(el('a', {class:'skip',href:'#main'},ui('Skip to content','Zum Inhalt')), el('div', {class:'mast wrap'}, brand(), nav, languages, menu));
-  const email = () => el('a', {href:'mailto:' + settings.email}, settings.email);
-  document.querySelector('footer').append(el('div', {class:'wrap foot'}, brand(), el('small', {}, '© ' + new Date().getFullYear() + ' ' + settings.artist), email()));
-  const image = (key, eager = false) => {
-    const w = works[key];
-    return el('img', {src:new URL(w.image,root).href, width:w.width,height:w.height,alt:t(w.alt),loading:eager ? 'eager' : 'lazy', decoding:'async'});
-  };
-  function caption(key) {
-    const w = works[key];
-    return el('figcaption', {}, el('em', {},t(w.title)), el('span', {}, [w.medium && t(w.medium), w.year].filter(Boolean).join(' · ')));
-  }
-  function previews(compact) {
-    return el('div', {class:'collections' + (compact ? ' compact' : '')}, ...collections.map(c =>
-      el('a', {href:url('galleries/'+c.id)}, image(c.cover), el('h3', {},t(c.title),arrow(true)))
-    ));
-  }
-  const sectionTitle = (title, intro) => el('div',{class:'section-title'},el('h1',{},title),el('p',{},intro));
-  let title;
-  if (page === 'index') {
-    title = ui('Watercolor & illustration','Aquarell & Illustration');
-    main.append(el('section', {class:'hero wrap'},
-      el('div', {class:'intro'}, el('p',{class:'eyebrow'},t(home.label)),
-        el('h1',{},t(home.heading),el('em',{},t(home.emphasis))), el('p',{class:'lead'},t(home.intro)),
-        link('portfolio',ui('Explore portfolio','Portfolio entdecken'),'button')),
-      el('figure',{class:'feature'},image(home.featured,true),caption(home.featured))),
-      el('section',{class:'selected'},el('div',{class:'wrap'},el('div',{class:'section-bar'},el('h2',{},t(home.selected)),link('portfolio',ui('View portfolio','Zum Portfolio'),'text-link')),previews(true))));
-  } else if (collection) {
-    title = t(collection.title);
-    const gallery = el('div',{class:'gallery'});
-    const triggers = [];
-    collection.works.forEach((key,index) => {
-      const button = el('button',{class:'art-button','aria-label':t(works[key].title)},image(key));
-      button.onclick = () => show(index);
-      triggers.push(button);
-      gallery.append(el('figure',{},button,caption(key)));
-    });
-    const dialog = el('dialog',{'aria-label':ui('Artwork viewer','Werkansicht')});
-    const stage = el('figure',{'aria-live':'polite'});
-    const close = el('button',{},ui('Close','Schließen'),' ×');
-    close.onclick = () => dialog.close();
-    const prev = el('button',{'aria-label':ui('Previous work','Vorheriges Werk')},'←');
-    const next = el('button',{'aria-label':ui('Next work','Nächstes Werk')},'→');
-    let current = 0;
-    let opener;
-    function show(index) {
-      current = (index + triggers.length) % triggers.length;
-      const key = collection.works[current];
-      stage.replaceChildren(image(key,true),caption(key));
-      if (!dialog.open) { opener = triggers[current]; dialog.showModal(); }
-    }
-    prev.onclick = () => show(current-1);
-    next.onclick = () => show(current+1);
-    dialog.onclose = () => opener?.focus();
-    dialog.onkeydown = e => {
-      if (e.key === 'ArrowRight') next.click();
-      if (e.key === 'ArrowLeft') prev.click();
-    };
-    let start;
-    dialog.ontouchstart = e => { start = e.changedTouches[0].clientX; };
-    dialog.ontouchend = e => {
-      const dx = e.changedTouches[0].clientX - start;
-      if (Math.abs(dx) > 60) show(current + (dx < 0 ? 1 : -1));
-    };
-    dialog.append(el('div',{class:'viewer-controls'},close),stage);
-    if (triggers.length > 1) dialog.append(el('div',{class:'steps'},prev,next));
-    main.append(el('section',{class:'wrap interior'},el('a',{class:'back',href:url('portfolio')},'← Portfolio'),sectionTitle(title,t(collection.description)),gallery),dialog);
-  } else if (page === 'article') {
-    title = article ? t(article.title) : ui('Article unavailable','Beitrag nicht verfügbar');
-    const section = el('article',{class:'article wrap interior'},el('a',{class:'back',href:url('news')},'← '+t(pages.news.title)),el('h1',{},title));
-    if (article) section.append(image(article.image,true),el('p',{},t(article.body)));
-    main.append(section);
-  } else {
-    const data = pages[page];
-    title = t(data.title);
-    const section = el('section',{class:'wrap interior'});
-    if (data.image) {
-      section.append(el('div',{class:'editorial'},el('div',{},sectionTitle(title,t(data.intro)),el('h2',{},t(data.sub)),el('p',{},t(data.body)),link(page === 'services' ? 'contact' : 'portfolio',page === 'services' ? t(pages.contact.title) : t(pages.portfolio.title),'text-link')),image(data.image,true)));
-    } else {
-      section.append(sectionTitle(title,t(data.intro)));
-      if (page === 'portfolio') section.append(previews(false));
-      if (page === 'contact') section.append(el('div',{class:'contact-email'},email()));
-      if (page === 'news') articles.slice().sort((a,b)=>b.date.localeCompare(a.date)).forEach(item => {
-        const date = new Intl.DateTimeFormat(language,{dateStyle:'long',timeZone:'UTC'}).format(new Date(item.date));
-        section.append(el('a',{class:'news-entry',href:url('article',{id:item.id})},image(item.image),el('div',{},el('time',{datetime:item.date},date),el('h2',{},t(item.title),arrow(true)),el('p',{},t(item.excerpt)))));
-      });
-    }
-    main.append(section);
-  }
-  document.title = title + ' · ' + settings.artist;
+  const {artist} = shared(settings);
+  const brand = () => link('index', artist, 'brand');
+  document.querySelector('header').append(
+    el('a', {class: 'skip', href: '#main'}, ui('Skip to content', 'Zum Inhalt')),
+    el('div', {class: 'mast wrap'}, brand(), nav, languages, menu)
+  );
+  document.querySelector('footer').append(el('div', {class: 'wrap foot'},
+    brand(), el('small', {}, '© ' + new Date().getFullYear() + ' ' + artist), emailLink(shared(contact).email)
+  ));
 }
+
+function emailLink(value) {
+  const email = text(value);
+  if (email) return el('a', {href: 'mailto:' + email}, email);
+}
+
+function sectionTitle(title, intro) {
+  return el('div', {class: 'section-title'}, el('h1', {}, title), text(intro) ? el('p', {}, text(intro)) : null);
+}
+
+function photoFigure(photo, caption, eager = false) {
+  if (!mediaUrl(photo?.image)) return;
+  return el('figure', {}, picture(photo, eager),
+    text(caption) ? el('figcaption', {}, el('span', {class: 'caption-meta'}, text(caption))) : null
+  );
+}
+
+function previewImage(candidates) {
+  const frame = el('div', {class: 'preview-image'});
+  const sources = candidates.filter(candidate => mediaUrl(candidate?.image));
+  function show(index) {
+    if (!sources[index]) {
+      frame.replaceChildren();
+      return;
+    }
+    const img = picture(sources[index]);
+    img.addEventListener('error', () => show(index + 1), {once: true});
+    frame.replaceChildren(img);
+  }
+  show(0);
+  return frame;
+}
+
+async function loadArtworks() {
+  const works = (await load('artworks')).map(artwork).filter(work => work.id && mediaUrl(work.image));
+  return new Map(works.map(work => [work.id, work]));
+}
+
+async function loadGalleries() {
+  return Promise.all(galleryIds.map(async id => ({id, entry: await load('galleries/' + id)})));
+}
+
+function galleryWorks(entry, works) {
+  return items(shared(entry).works).map(item => works.get(item?.artwork)).filter(Boolean);
+}
+
+function categoryPreviews(galleries, works, compact = false) {
+  return el('div', {class: compact ? 'collections compact' : 'collections'}, ...galleries.map(({id, entry}) => {
+    const {cover, coverImage} = shared(entry);
+    const {title, coverAlt} = localized(entry);
+    const candidates = [{image: coverImage, alt: coverAlt}, works.get(cover), ...galleryWorks(entry, works)];
+    return el('a', {href: url('galleries/' + id)}, previewImage(candidates),
+      el(compact ? 'h3' : 'h2', {class: 'preview-title'}, title)
+    );
+  }));
+}
+
+async function renderHome() {
+  const [home, works, galleries] = await Promise.all([load('home'), loadArtworks(), loadGalleries()]);
+  const {pageTitle, selected, portfolioLink} = localized(home);
+  const featured = works.get(shared(home).featured) || works.values().next().value;
+  const hero = el('section', {class: 'hero wrap'}, el('h1', {class: 'visually-hidden'}, pageTitle));
+  main.append(hero, el('section', {class: 'selected'}, el('div', {class: 'wrap'},
+    el('div', {class: 'section-bar'}, el('h2', {}, selected), link('portfolio', portfolioLink, 'text-link')),
+    categoryPreviews(galleries, works, true)
+  )));
+  if (featured) renderArtworkSet(hero, [featured], true);
+  return pageTitle;
+}
+
+async function renderPortfolio() {
+  const [data, works, galleries] = await Promise.all([load('portfolio'), loadArtworks(), loadGalleries()]);
+  const {title, intro} = localized(data);
+  main.append(el('section', {class: 'wrap interior'}, sectionTitle(title, intro), categoryPreviews(galleries, works)));
+  return title;
+}
+
+async function renderGallery() {
+  const [portfolio, entry, works] = await Promise.all([load('portfolio'), load('galleries/' + page), loadArtworks()]);
+  const {title, description} = localized(entry);
+  const gallery = el('div', {class: 'gallery'});
+  main.append(el('section', {class: 'wrap interior'}, back('portfolio', localized(portfolio).title),
+    sectionTitle(title, description), gallery
+  ));
+  const ordered = galleryWorks(entry, works);
+  if (ordered.length) renderArtworkSet(gallery, ordered);
+  else gallery.append(el('p', {}, ui('No artworks have been added yet.', 'Hier wurden noch keine Werke hinzugefügt.')));
+  return title;
+}
+
+async function renderServices() {
+  const [overview, entries] = await Promise.all([load('services-overview'), load('services')]);
+  const {title, intro} = localized(overview);
+  const section = el('section', {class: 'wrap interior'});
+  if (page === 'services') {
+    section.append(sectionTitle(title, intro));
+    section.append(el('div', {class: 'collections service-previews'}, ...entries.map(entry => {
+      const {id, coverImage} = shared(entry);
+      const {title: name, coverAlt} = localized(entry);
+      return el('a', {href: url('service', {id})}, previewImage([{image: coverImage, alt: coverAlt}]),
+        el('h2', {class: 'preview-title'}, name));
+    })));
+    main.append(section);
+    return title;
+  }
+
+  const entry = entries.find(item => shared(item).id === entryId);
+  section.append(back('services', title));
+  main.append(section);
+  if (!entry) {
+    const unavailable = ui('Service unavailable', 'Leistung nicht verfügbar');
+    section.append(sectionTitle(unavailable));
+    return unavailable;
+  }
+
+  const data = localized(entry);
+  const sharedData = shared(entry);
+  const article = el('article', {class: 'service-detail'}, sectionTitle(data.title, data.intro), richText(data.body));
+  const href = contentLink(sharedData.inquiryUrl);
+  if (href && text(data.inquiryLabel)) article.append(el('a', {class: 'text-link', href}, text(data.inquiryLabel)));
+  section.append(article);
+  const photos = items(sharedData.photos).map((photo, index) => {
+    const {alt, caption} = items(data.photos)[index] ?? {};
+    return photoFigure({image: photo?.image, alt}, caption);
+  }).filter(Boolean);
+  if (photos.length) section.append(el('div', {class: 'service-gallery'}, ...photos));
+  return data.title;
+}
+
+async function renderAbout() {
+  const [data, works, portfolio] = await Promise.all([load('about'), loadArtworks(), load('portfolio')]);
+  const copy = localized(data);
+  const {image, artwork: reference} = shared(data);
+  const photo = mediaUrl(image) ? {image, alt: copy.alt} : works.get(reference);
+  main.append(el('section', {class: 'wrap interior'}, el('div', {class: 'editorial'},
+    el('div', {}, sectionTitle(copy.title, copy.intro), text(copy.sub) ? el('h2', {}, copy.sub) : null,
+      richText(copy.body), link('portfolio', localized(portfolio).title, 'text-link')),
+    photoFigure(photo, copy.caption, true)
+  )));
+  return copy.title;
+}
+
+function renderContact(contact) {
+  const {title, intro, body} = localized(contact);
+  const {email, telephone, social} = shared(contact);
+  const section = el('section', {class: 'wrap interior'}, sectionTitle(title, intro), richText(body));
+  if (text(email)) section.append(el('div', {class: 'contact-email'}, emailLink(email)));
+  if (text(telephone)) {
+    section.append(el('p', {class: 'contact-line'}, el('a', {href: 'tel:' + telephone.replace(/[^+\d]/g, '')}, telephone)));
+  }
+  const socials = items(social).map(({label, href}) => {
+    const destination = contentLink(href);
+    if (destination && text(label)) return el('li', {}, el('a', {href: destination}, label));
+  }).filter(Boolean);
+  if (socials.length) section.append(el('ul', {class: 'social-links'}, ...socials));
+  main.append(section);
+  return title;
+}
+
+async function renderNews() {
+  const [overview, articles, works] = await Promise.all([load('news-overview'), load('news'), loadArtworks()]);
+  const {title, intro} = localized(overview);
+  function photo(item) {
+    const {coverImage, image} = shared(item);
+    return mediaUrl(coverImage) ? {image: coverImage, alt: localized(item).coverAlt} : works.get(image);
+  }
+
+  if (page === 'article') {
+    const item = articles.find(article => shared(article).id === entryId);
+    const copy = localized(item);
+    const articleTitle = copy.title || ui('Article unavailable', 'Beitrag nicht verfügbar');
+    main.append(el('article', {class: 'article wrap interior'}, back('news', title), el('h1', {}, articleTitle),
+      item ? photoFigure(photo(item), copy.caption, true) : null, richText(copy.body)
+    ));
+    return articleTitle;
+  }
+
+  const section = el('section', {class: 'wrap interior'}, sectionTitle(title, intro));
+  const formatDate = new Intl.DateTimeFormat(language, {dateStyle: 'long', timeZone: 'UTC'});
+  for (const item of articles.slice().sort((a, b) => text(shared(b).date).localeCompare(text(shared(a).date)))) {
+    const {id, date} = shared(item);
+    const copy = localized(item);
+    const image = photo(item);
+    const dateValue = new Date(date);
+    section.append(el('a', {
+      class: image ? 'news-entry' : 'news-entry news-entry-text', href: url('article', {id})
+    }, image ? picture(image) : null, el('div', {},
+      Number.isFinite(dateValue.getTime()) ? el('time', {datetime: date}, formatDate.format(dateValue)) : null,
+      el('h2', {}, copy.title), text(copy.excerpt) ? el('p', {}, copy.excerpt) : null
+    )));
+  }
+  main.append(section);
+  return title;
+}
+
+async function render() {
+  const [settings, contact] = await Promise.all([load('settings'), load('contact')]);
+  const isGallery = galleryIds.includes(page);
+  let active = page;
+  if (isGallery) active = 'portfolio';
+  if (page === 'article') active = 'news';
+  if (page === 'service') active = 'services';
+  renderChrome(settings, contact, active);
+
+  let title;
+  if (isGallery) title = await renderGallery();
+  else if (page === 'index') title = await renderHome();
+  else if (page === 'portfolio') title = await renderPortfolio();
+  else if (page === 'services' || page === 'service') title = await renderServices();
+  else if (page === 'about') title = await renderAbout();
+  else if (page === 'contact') title = renderContact(contact);
+  else if (page === 'news' || page === 'article') title = await renderNews();
+  document.title = title + ' · ' + shared(settings).artist;
+}
+
 render().catch(error => {
   console.error(error);
-  main.textContent = ui('The catalogue could not be loaded. Please reload the page.','Der Katalog konnte nicht geladen werden. Bitte laden Sie die Seite erneut.');
+  main.textContent = ui('The catalogue could not be loaded. Please reload the page.',
+    'Der Katalog konnte nicht geladen werden. Bitte laden Sie die Seite erneut.');
 });

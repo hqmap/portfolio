@@ -1,0 +1,28 @@
+{
+  "en": {
+    "cover": "poppy",
+    "works": [
+      {
+        "artwork": "poppy"
+      },
+      {
+        "artwork": "stem-study"
+      }
+    ],
+    "title": "Design",
+    "description": "Botanical forms and studies for print."
+  },
+  "de": {
+    "cover": "poppy",
+    "works": [
+      {
+        "artwork": "poppy"
+      },
+      {
+        "artwork": "stem-study"
+      }
+    ],
+    "title": "Design",
+    "description": "Botanische Formen und Studien für den Druck."
+  }
+}

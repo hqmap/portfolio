@@ -1,0 +1,22 @@
+{
+  "en": {
+    "cover": "profile",
+    "works": [
+      {
+        "artwork": "profile"
+      }
+    ],
+    "title": "Portraits",
+    "description": "Faces observed in passing light."
+  },
+  "de": {
+    "cover": "profile",
+    "works": [
+      {
+        "artwork": "profile"
+      }
+    ],
+    "title": "Porträts",
+    "description": "Gesichter im wechselnden Licht."
+  }
+}

@@ -1,19 +1,20 @@
 [
   {
-    "id": "by-the-water",
-    "date": "2025-06-12",
-    "title": {
-      "en": "By the water",
-      "de": "Am Wasser"
+    "en": {
+      "id": "by-the-water",
+      "date": "2025-06-12",
+      "image": "harbour",
+      "title": "By the water",
+      "excerpt": "A page from a sketchbook filled along the quay.",
+      "body": "<p>I returned to the same stretch of harbour three mornings in a row. The boats scarcely moved, but each day the water called for another blue. This painting grew out of those three small studies.</p>"
     },
-    "image": "harbour",
-    "excerpt": {
-      "en": "A page from a sketchbook filled along the quay.",
-      "de": "Eine Seite aus einem Skizzenbuch, das sich am Kai gefüllt hat."
-    },
-    "body": {
-      "en": "I returned to the same stretch of harbour three mornings in a row. The boats scarcely moved, but each day the water called for another blue. This painting grew out of those three small studies.",
-      "de": "Drei Morgen hintereinander kehrte ich an denselben Kai zurück. Die Boote bewegten sich kaum, aber jeden Tag verlangte das Wasser nach einem anderen Blau. Aus diesen drei kleinen Studien entstand dieses Bild."
+    "de": {
+      "id": "by-the-water",
+      "date": "2025-06-12",
+      "image": "harbour",
+      "title": "Am Wasser",
+      "excerpt": "Eine Seite aus einem Skizzenbuch, das sich am Kai gefüllt hat.",
+      "body": "<p>Drei Morgen hintereinander kehrte ich an denselben Kai zurück. Die Boote bewegten sich kaum, aber jeden Tag verlangte das Wasser nach einem anderen Blau. Aus diesen drei kleinen Studien entstand dieses Bild.</p>"
     }
   }
 ]

@@ -1,6 +1,6 @@
 # Artist Portfolio — Website Design Document
 
-**Version:** 1.0 — Initial concept  
+**Version:** 1.1 — Prototype v2 and CMS integration\
 **Project type:** Bilingual artist portfolio  
 **Languages:** English and German  
 **Hosting:** GitHub Pages  
@@ -65,6 +65,7 @@ Each category has its own dedicated gallery page.
   - Portraits
   - Creative Projects
 - Services & Commissions
+  - Individual service pages generated from CMS entries
 - About Me
 - News
   - Individual news articles
@@ -157,6 +158,8 @@ All selected fonts must support German characters and be hosted locally in optim
 - Minimal borders and separators.
 - Predominantly rectangular artwork presentation.
 - Subtle hover transitions.
+- Ordinary links use underlines, hover and focus states, or a clickable preview.
+- Arrows indicate functional navigation such as back links and previous and next artwork controls.
 - Little or no artificial drop shadows.
 - No gradients or prominent interface decorations unless artistically justified.
 - No intrusive animations, automatic carousels or distracting visual effects.
@@ -199,19 +202,11 @@ The footer should remain visually secondary to the main content.
 
 ### 5.1. Homepage
 
-The homepage serves as a concise visual introduction to the artist.
+The homepage opens with one large, artist-selected artwork inside the existing content margins. It uses the available width for landscape images and keeps square and portrait images comfortably sized. Images retain their proportions and can be opened in the artwork viewer. When artwork information is available, it appears below the image in the same caption style as the galleries.
 
-Proposed content:
+Selected Collections remains below the featured artwork and uses the same category covers as the Portfolio overview. The header, language switcher, paper background and footer frame the artwork.
 
-- One prominent representative artwork.
-- Artist's name or short introductory statement.
-- Brief introduction to the artist's creative practice.
-- Link to the portfolio.
-- Optional selection of featured works or the latest news item.
-
-The homepage should not become a lengthy promotional landing page. Its primary purpose is to establish the visual identity and invite visitors to explore the artwork.
-
-The main image and introductory text should be editable through the CMS.
+The CMS provides one featured artwork selection shared by both languages. The artwork and Selected Collections provide the homepage introduction.
 
 ### 5.2. Portfolio overview
 
@@ -237,79 +232,35 @@ Mobile layout:
 
 Clicking anywhere within a category preview opens the corresponding gallery page.
 
-The artist should be able to independently select and replace each category's cover image through the CMS.
+The artist can choose an artwork by its stable ID or select or upload a dedicated cover image through the CMS. The selection is shared by both languages and used on the Portfolio overview and in Selected Collections. A dedicated image takes precedence. If the selection is unavailable, the first available gallery artwork becomes the cover. An empty category remains accessible from its labeled preview.
 
 ### 5.3. Category gallery pages
 
-Each category has its own dedicated page containing:
+Each category has its own dedicated page containing a category heading, optional introductory text, an artwork gallery and a link back to the Portfolio overview.
 
-- Category heading.
-- Optional introductory text.
-- Gallery of artworks.
-- Link back to the portfolio overview.
-
-The gallery should preserve the original aspect ratio of each artwork. Paintings must not be cropped merely to achieve a uniform grid.
-
-An adaptive, row-based or masonry-inspired layout should accommodate a mixture of portrait, landscape and square artworks while respecting the artist's selected ordering.
-
-The gallery layout should adapt to the available screen width.
+The responsive masonry gallery uses equal-width columns and consistent gaps. It places the first artworks across the top from left to right, then places each next artwork in the shortest column, breaking ties from left to right. The layout measures image and caption heights and updates when viewport, fonts or card heights change. The CMS order also determines document order, focus order and viewer navigation. Each artwork retains its original aspect ratio.
 
 **Artwork information**
 
-Each artwork may include:
-
-- Primary image.
-- Additional photographs or detail views.
-- Title.
-- Year of creation.
-- Medium or technique.
-- Dimensions.
-- Description.
-- Alternative text for accessibility.
-
-Only the primary image is mandatory. Other fields may be left empty.
+An artwork requires only its image. The optional caption can contain an italic title, technique, creation year, physical dimensions and an extended description. The caption wraps on small screens and takes up space only when content is present. Alternative text is translated independently of the visible caption. Additional views of an artwork can be catalogued as individual gallery entries, as in the existing detail studies.
 
 **Manual artwork ordering**
 
-The artist must be able to rearrange artworks through drag-and-drop controls in Sveltia CMS.
-
-The public gallery must follow the saved order rather than automatically sorting by date, filename or title.
-
-The ordering is shared between English and German.
+The artist adds artworks to a gallery by selecting references to stable artwork IDs and arranges them with Sveltia's drag-and-drop list. Both languages read the same saved order.
 
 **Expanded artwork viewer**
 
-Clicking an artwork opens a fullscreen or near-fullscreen lightbox containing:
+The fullscreen viewer fits the full optimized image inside the space available after its margins, caption and controls. It preserves image proportions, displays the entire artwork and can enlarge small sources. The Close button, previous and next controls, arrow-key navigation, Escape, focus restoration and touch swipes support navigation.
 
-- A larger version of the artwork.
-- Optional artwork information.
-- Previous and next navigation.
-- Close button.
-- Keyboard navigation.
-- Touch swipe navigation on mobile devices.
-
-The artwork should fit within the screen without cropping. Background distractions should be minimized.
+Pressing or tapping the artwork toggles a 130% zoom relative to its fitted size. The selected point guides the zoom and the visitor can drag to pan the enlarged image. Controls and caption remain at their normal size. Swipes navigate in normal viewing mode. Dragging while zoomed pans the image and preserves the zoom state. Closing the viewer or changing artworks resets the zoom and pan.
 
 ### 5.4. Services & Commissions
 
-A text-oriented page describing the artist's available services and commissioned work.
+The overview presents a responsive set of smaller image-and-title previews. The entire card links to the service's dedicated page. The starting categories are Drawing & Painting Classes, Ceramics and Commissions, with English and German titles and editable sample content.
 
-Potential sections:
+Each service detail page uses the site's editorial typography and can include a title, optional introduction, formatted description, ordered photographs with optional captions, and an optional inquiry link. Photographs retain their aspect ratios. A back link returns visitors to the overview, and Services & Commissions stays active in the main navigation.
 
-- Available artistic services.
-- Custom watercolor paintings.
-- Portrait commissions.
-- Illustration and design services.
-- Commission process.
-- Pricing information, if desired.
-- How to submit an inquiry.
-- Examples of commissioned works.
-
-The page may include photographs and links to relevant galleries.
-
-Text, images and section headings should be editable through the CMS.
-
-The initial implementation will use placeholder content.
+The artist can create, translate, reorder and delete service categories in the CMS. The reusable `service.html` reads a stable ID from the URL and retrieves the entry from the services collection. Renaming or reordering the service preserves its URL. The language switcher keeps the service ID. A missing entry displays a localized message and a link to the overview.
 
 ### 5.5. About Me
 
@@ -385,7 +336,7 @@ The website will support English and German using Sveltia CMS's built-in interna
 - English is proposed as the default language.
 - German-speaking visitors may automatically receive the German version on their first visit.
 - Visitors can change languages on any page.
-- Changing languages preserves the current page, category or article.
+- Changing languages preserves the current page, category, article or service.
 - The selected language is remembered locally.
 - Language-specific URLs can be copied and shared.
 - The language switcher uses language names or abbreviations rather than national flags.
@@ -401,7 +352,11 @@ The website will support English and German using Sveltia CMS's built-in interna
 | Artwork technique | Translated |
 | Image alternative text | Translated |
 | News titles and articles | Translated |
-| Artwork photographs | Shared |
+| Service titles, introductions, descriptions, captions and inquiry labels | Translated |
+| Artwork and service photographs | Shared |
+| Portfolio covers and featured artwork selection | Shared |
+| Artwork, service and article identifiers | Shared |
+| Service and photograph ordering | Shared |
 | Gallery ordering | Shared |
 | Artwork dimensions | Shared |
 | Creation year | Shared |
@@ -410,88 +365,37 @@ The website will support English and German using Sveltia CMS's built-in interna
 
 Translations should be managed within the same CMS entry to minimize duplicated work.
 
-Images must not need to be uploaded separately for each language.
+Images are uploaded once. Optional artwork text can be blank in either language.
 
 ## 7. Content management system
 
 ### 7.1. Platform
 
-Sveltia CMS will provide the administrative interface.
-
-The interface will be accessible at:
-
-`https://website-address/admin/`
-
-It will operate independently of the public-facing website.
+Sveltia CMS provides the administrative interface at [`/portfolio/admin/`](https://hqmap.github.io/portfolio/admin/). It loads a pinned release and uses the GitHub backend for `hqmap/portfolio`. The administration interface runs independently of the public site.
 
 ### 7.2. CMS content organization
 
-The administration interface should contain clearly labelled content sections:
+- **Website Pages** manages the homepage, Portfolio overview, Services overview, About Me, News overview and Contact. The homepage selects a featured artwork. Contact holds the studio email used in the footer, along with optional phone and social links.
+- **Artwork Library** manages images, stable identifiers and artwork metadata.
+- **Portfolio Galleries & Covers** contains a file for each of the four galleries. Each gallery has a translated title and introduction, shared cover artwork or dedicated cover image, and a draggable list of artwork references.
+- **Services & Commissions** manages the ordered service categories, covers, translated editorial content, photo lists and inquiry links.
+- **News Articles** manages publications, dates, cover images and formatted articles.
+- **Website Settings** manages the artist name and translated navigation labels.
+- **Asset Library** holds artwork scans, photographs and other uploaded media.
 
-**Website pages**
-
-- Homepage.
-- Portfolio overview.
-- Services & Commissions.
-- About Me.
-- Contact.
-
-**Artwork galleries**
-
-- Design.
-- Illustration.
-- Portraits.
-- Creative Projects.
-
-**Publications**
-
-- News articles.
-
-**Settings**
-
-- Artist's name.
-- Contact information.
-- Social media links.
-- General website settings.
-
-**Media library**
-
-- Artwork images.
-- News photographs.
-- Portrait photographs.
-- Other uploaded media.
-
-The interface should expose content-related settings only. Structural website code and technical configuration should remain outside the artist's normal editing workflow.
+The interface exposes content fields. Page structure and technical configuration are maintained in source.
 
 ### 7.3. Editing functionality
 
-The artist should be able to:
+The artist can upload an image once, add optional artwork information and select the artwork in any gallery. The gallery's reorderable list controls public order for both languages. A separate selection controls each cover and the homepage artwork.
 
-- Edit page text using a visual rich-text editor.
-- Upload and replace images.
-- Create and delete artworks.
-- Rearrange artworks using drag-and-drop.
-- Change portfolio category cover images.
-- Add artwork information.
-- Create and edit news articles.
-- Manage English and German translations.
-- Preview content before publishing.
-- Update contact details and social media links.
+The artist can create, edit, reorder and delete services in the ordered services collection. A new service receives a stable ID. Its cover and photos are shared, while titles, introductions, descriptions, image captions, alternative text and inquiry labels can be translated independently. English and German content live in the same entry.
+
+The CMS provides visual rich-text editing for descriptions, biographies and articles. Editors can preview entries before publishing and update contact details through the same interface.
 
 ### 7.4. Live preview
 
-Sveltia CMS's preview interface should be customized to resemble the public website as closely as practical.
-
-Custom preview templates and styles should be provided for:
-
-- Text-oriented pages.
-- Artwork galleries.
-- Individual artworks.
-- News articles.
-
-The preview should reflect the website's typography, colors, image proportions and general content layout.
-
-Exact reproduction of the complete responsive website within the CMS preview is not essential.
+The Sveltia preview pane uses the public stylesheet and local fonts, along with templates for the homepage, artworks, galleries and editorial entries. The templates display the current locale and use Sveltia's asset and relation preview data. Gallery previews show the saved or draft sequence, and the public pages provide the responsive masonry layout and interactive viewer.
 
 ### 7.5. Authentication
 
@@ -533,16 +437,16 @@ Image quality is particularly important because the website presents fine art.
 
 Sveltia CMS should be configured to optimize uploaded photographs automatically.
 
-Proposed initial settings:
+Configured upload settings:
 
-- Maximum long-edge resolution: approximately 2400–3000 pixels.
+- Maximum long-edge resolution: 2800 pixels.
 - Optimized WebP output.
-- High compression quality, approximately 90–95.
+- High compression quality, 94.
 - Preservation of original aspect ratio.
 - No automatic cropping.
 - No automatic color enhancement or sharpening.
 
-These settings should be tested using representative watercolor paintings before finalizing them.
+Evaluate the upload settings with representative watercolor scans before replacing the review assets.
 
 Particular attention should be paid to delicate color transitions, paper texture, fine brushwork and subtle low-contrast details.
 
@@ -551,13 +455,13 @@ Original high-resolution artwork photographs should be archived separately rathe
 ### Public website image loading
 
 - Lazy loading of off-screen images.
-- Appropriate image dimensions to prevent layout shifts.
+- Valid stored dimensions reserve space when they match the image path. The browser reads intrinsic dimensions for new images and corrects dimensions when an image changes.
 - Optimized thumbnails where practical.
-- Higher-resolution images for expanded artwork viewing.
+- The viewer uses the full optimized image and has no additional source resolution limit.
 - Responsive image presentation.
 - Preservation of accurate color appearance using suitable sRGB source files.
 
-Automatic generation of separate thumbnail files may require additional implementation in the CMS. The initial version may use a single optimized image per artwork to preserve technical simplicity.
+The site uses one optimized file per artwork. The artist can upload a scan without entering pixel dimensions or creating thumbnails.
 
 ## 9. Responsive design
 
@@ -566,8 +470,9 @@ The website should be designed for screen widths ranging from approximately 320 
 | Element | Desktop | Tablet | Mobile |
 |---|---|---|---|
 | Navigation | Horizontal | Adaptive | Collapsible |
-| Category overview | 2 columns | 2 columns | 1 column |
-| Artwork gallery | 3–4 columns or adaptive rows | 2–3 columns | 1–2 columns |
+| Portfolio overview | 2 columns | 2 columns | 1 column |
+| Services overview | 3 columns | 2 columns | 1 column |
+| Artwork gallery | 3 masonry columns | 2 masonry columns | 1 column |
 | Biography | Image and text | Adaptive | Stacked |
 | News overview | 2–3 columns | 2 columns | 1 column |
 | Artwork viewer | Fullscreen overlay | Fullscreen overlay | Touch-friendly fullscreen |
@@ -581,6 +486,7 @@ Additional requirements:
 - Easily accessible language selection.
 - Support for portrait and landscape device orientations.
 - Responsive image and text sizing.
+- Tap the artwork to toggle zoom on touch screens. In landscape on short screens, viewer controls share the top row to make space for the artwork.
 
 ## 10. Technical architecture
 
@@ -603,76 +509,48 @@ Additional requirements:
 
 No static site generator, JavaScript framework, Node.js environment or package manager is required for website deployment.
 
-### 10.2. Proposed repository structure
+### 10.2. Repository structure
 
     portfolio/
-    ├── index.html
-    ├── portfolio.html
+    ├── index.html, portfolio.html, services.html, service.html
+    ├── about.html, contact.html, news.html, article.html
     ├── galleries/
-    │   ├── design.html
-    │   ├── illustration.html
-    │   ├── portraits.html
-    │   └── creative-projects.html
-    ├── services.html
-    ├── about.html
-    ├── news.html
-    ├── article.html
-    ├── contact.html
-    ├── css/
-    │   └── style.css
+    │   └── design.html, illustration.html, portraits.html, creative-projects.html
+    ├── css/style.css
     ├── js/
-    │   ├── main.js
-    │   ├── content.js
-    │   ├── gallery.js
-    │   └── language.js
+    │   └── main.js, content.js, gallery.js, viewer.js
     ├── content/
-    │   ├── settings.json
-    │   ├── home.json
-    │   ├── portfolio.json
-    │   ├── services.json
-    │   ├── about.json
-    │   ├── contact.json
-    │   ├── news.json
+    │   ├── artworks.json, services.json, news.json
+    │   ├── home.json, portfolio.json, services-overview.json
+    │   ├── about.json, contact.json, news-overview.json, settings.json
     │   └── galleries/
-    │       ├── design.json
-    │       ├── illustration.json
-    │       ├── portraits.json
-    │       └── creative-projects.json
+    │       └── design.json, illustration.json, portraits.json, creative-projects.json
     ├── images/
     │   ├── artworks/
-    │   ├── news/
-    │   ├── pages/
     │   └── textures/
     ├── fonts/
     ├── admin/
-    │   ├── index.html
-    │   ├── config.yml
-    │   ├── preview.js
-    │   └── preview.css
-    ├── favicon.svg
+    │   └── index.html, config.yml, preview.js, preview.css
     ├── .nojekyll
+    ├── DESIGN.md
+    ├── AGENTS.md
     └── README.md
 
 ### 10.3. Content rendering
 
-JavaScript will load the relevant JSON content files and render the requested language version.
+The HTML entry points load the shared stylesheet and the main vanilla JavaScript module. Page renderers fetch their JSON relative to the repository base, including from nested gallery pages. The renderer reads exact-locale text and default-locale shared values from each entry. Shared media values written as `/portfolio/images/…` resolve within the GitHub Pages project path.
 
-Each gallery will use an ordered list of artwork entries. Reordering entries in the CMS changes their sequence in the corresponding JSON file.
+Artworks, services and news articles are stored as ordered arrays of Sveltia single-file entries with `en` and `de` objects. Website pages and galleries are individual bilingual JSON files. Gallery files store references to the Artwork Library in saved order. Settings, covers and relationships are editable through native CMS fields.
 
-News articles may use stable identifiers, enabling individual URLs such as:
+News and services use reusable static detail pages. Example URLs include `article.html?id=by-the-water&lang=en` and `service.html?id=painting-classes&lang=de`. The query string preserves the identifier on reload and when changing languages.
 
-`article.html?id=summer-exhibition&lang=en`
-
-`article.html?id=summer-exhibition&lang=de`
-
-The website must support direct navigation to these URLs without requiring custom server-side routing.
+Sveltia's rich-text field stores HTML. Public rendering copies permitted structural elements from an inert template and validates links and image paths. Public pages load no CMS scripts.
 
 ### 10.4. External dependencies
 
 External dependencies should be kept to a minimum.
 
 - Sveltia CMS, loaded only in the administration interface.
-- An optional lightweight Markdown renderer for rich-text content.
 - Locally hosted fonts.
 - Locally hosted images and decorative textures.
 - Native browser functionality wherever possible.
@@ -734,27 +612,21 @@ The no-build architecture means that dynamically loaded article content and arti
 
 Content management should remain separate from website structure, reducing the risk of accidental design changes.
 
-## 13. Initial development scope
+## 13. Prototype v2 scope
 
-The first implementation will include:
+Prototype v2 includes:
 
-- Complete bilingual website structure.
-- Placeholder text for all pages.
-- Representative placeholder artwork images.
-- Responsive header, navigation and footer.
-- Four functional portfolio category galleries.
-- Fullscreen artwork viewer.
-- News overview and individual article pages.
-- Language switching and persistence.
-- Sveltia CMS configuration.
-- Drag-and-drop artwork ordering.
-- Shared bilingual image management.
-- Automatic upload optimization.
-- Customized CMS previews.
-- GitHub Pages deployment configuration.
-- Basic administration instructions for the artist.
+- The bilingual site and its established paper texture, palette, typography and navigation.
+- One artist-selected homepage artwork, with Selected Collections below it.
+- Four portfolio gallery pages with independent covers, optional captions and responsive masonry.
+- A fullscreen viewer with fitted image sizing, 130% zoom, panning and keyboard and touch support.
+- An ordered Services & Commissions overview and dynamic bilingual service pages.
+- News overview and individual articles, About Me and Contact.
+- Sveltia CMS with a shared media library, native editing and ordering, optimized uploads, previews and GitHub PAT sign-in.
+- A GitHub Pages project deployment with static routes and no build step.
+- Administration and verification instructions in the README.
 
-The initial version will not include e-commerce, payment processing, user accounts, server-based contact forms or complex editorial workflows.
+E-commerce, payment processing, visitor accounts, server-based contact forms and complex editorial workflows remain outside this revision's scope.
 
 ## 14. Final design principles
 
