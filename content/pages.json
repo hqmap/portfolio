@@ -1,0 +1,70 @@
+{
+  "portfolio": {
+    "title": {
+      "en": "Portfolio",
+      "de": "Portfolio"
+    },
+    "intro": {
+      "en": "Four collections of work on paper.",
+      "de": "Vier Sammlungen mit Arbeiten auf Papier."
+    }
+  },
+  "services": {
+    "title": {
+      "en": "Services & Commissions",
+      "de": "Leistungen & Auftragsarbeiten"
+    },
+    "image": "poppy",
+    "intro": {
+      "en": "A painting can begin with a place, a person, or a small object you want to remember.",
+      "de": "Ein Bild kann mit einem Ort, einer Person oder einem kleinen Erinnerungsstück beginnen."
+    },
+    "sub": {
+      "en": "Working together",
+      "de": "Zusammenarbeit"
+    },
+    "body": {
+      "en": "For portraits, botanical studies, and editorial illustration, send a short description of your idea. We can choose a format and discuss the first sketch together.",
+      "de": "Für Porträts, botanische Studien und Illustrationen genügt zunächst eine kurze Beschreibung Ihrer Idee. Gemeinsam wählen wir ein Format und besprechen die erste Skizze."
+    }
+  },
+  "about": {
+    "title": {
+      "en": "About Clara",
+      "de": "Über Clara"
+    },
+    "image": "stem-study",
+    "intro": {
+      "en": "My sketchbooks begin outdoors, where a shadow can change before the first wash has dried.",
+      "de": "Meine Skizzenbücher beginnen draußen, wo ein Schatten wandert, bevor die erste Lasur getrocknet ist."
+    },
+    "sub": {
+      "en": "In the studio",
+      "de": "Im Atelier"
+    },
+    "body": {
+      "en": "Back at the drawing table I work in transparent layers, leaving the paper visible between strokes. These small intervals of light give each painting its rhythm.",
+      "de": "Am Zeichentisch arbeite ich in transparenten Schichten. Zwischen den Pinselstrichen bleibt das Papier sichtbar. Diese kleinen Lichtflächen geben jedem Bild seinen Rhythmus."
+    }
+  },
+  "contact": {
+    "title": {
+      "en": "Contact",
+      "de": "Kontakt"
+    },
+    "intro": {
+      "en": "For commissions, collaborations, or a note about a painting, write to the studio.",
+      "de": "Für Aufträge, gemeinsame Projekte oder eine Nachricht zu einem Bild schreiben Sie an das Atelier."
+    }
+  },
+  "news": {
+    "title": {
+      "en": "News",
+      "de": "Aktuelles"
+    },
+    "intro": {
+      "en": "Recent notes from the studio and the sketchbook.",
+      "de": "Neue Einträge aus Atelier und Skizzenbuch."
+    }
+  }
+}

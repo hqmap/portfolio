@@ -1,0 +1,110 @@
+{
+  "alpine-water": {
+    "image": "images/artworks/alpine-water.webp",
+    "width": 768,
+    "height": 512,
+    "title": {
+      "en": "An Alpine Stillness",
+      "de": "Alpine Stille"
+    },
+    "alt": {
+      "en": "Blue alpine peaks and dark pines reflected in a clear mountain lake",
+      "de": "Blaue Berggipfel und dunkle Kiefern spiegeln sich in einem klaren Bergsee"
+    },
+    "year": 2025,
+    "medium": {
+      "en": "Watercolor on paper",
+      "de": "Aquarell auf Papier"
+    }
+  },
+  "poppy": {
+    "image": "images/artworks/poppy.webp",
+    "width": 768,
+    "height": 512,
+    "title": {
+      "en": "Golden Poppy",
+      "de": "Goldener Mohn"
+    },
+    "alt": {
+      "en": "An open golden poppy and curling buds painted on warm paper",
+      "de": "Eine goldene Mohnblüte und geschwungene Knospen auf warmem Papier"
+    },
+    "year": 2025,
+    "medium": {
+      "en": "Watercolor on paper",
+      "de": "Aquarell auf Papier"
+    }
+  },
+  "profile": {
+    "image": "images/artworks/profile.webp",
+    "width": 505,
+    "height": 512,
+    "title": {
+      "en": "Afternoon Light",
+      "de": "Nachmittagslicht"
+    },
+    "alt": {
+      "en": "A woman in profile, her hair loosely gathered, in soft rose and umber",
+      "de": "Frauenprofil mit locker gebundenem Haar in zartem Rosa und Umbra"
+    },
+    "year": 2024,
+    "medium": {
+      "en": "Watercolor on paper",
+      "de": "Aquarell auf Papier"
+    }
+  },
+  "harbour": {
+    "image": "images/artworks/harbour.webp",
+    "width": 768,
+    "height": 512,
+    "title": {
+      "en": "Along the Quay",
+      "de": "Am Kai"
+    },
+    "alt": {
+      "en": "Blue fishing boats below sunlit terracotta rooftops",
+      "de": "Blaue Fischerboote unter sonnenbeschienenen Ziegeldächern"
+    },
+    "year": 2025,
+    "medium": {
+      "en": "Watercolor on paper",
+      "de": "Aquarell auf Papier"
+    }
+  },
+  "stem-study": {
+    "image": "images/artworks/stem-study.webp",
+    "width": 352,
+    "height": 510,
+    "title": {
+      "en": "Poppy, stem detail",
+      "de": "Mohn, Stängeldetail"
+    },
+    "alt": {
+      "en": "Tall study of a poppy stem and green seed head",
+      "de": "Hochformatige Studie eines Mohnstängels mit grüner Samenkapsel"
+    },
+    "year": 2025,
+    "medium": {
+      "en": "Watercolor on paper",
+      "de": "Aquarell auf Papier"
+    }
+  },
+  "lake-detail": {
+    "image": "images/artworks/lake-detail.webp",
+    "width": 344,
+    "height": 344,
+    "title": {
+      "en": "Lake, reflection detail",
+      "de": "See, Spiegelungsdetail"
+    },
+    "alt": {
+      "en": "Square detail of blue-green reflections beneath pine trees",
+      "de": "Quadratisches Detail blaugrüner Spiegelungen unter Kiefern"
+    },
+    "year": 2025,
+    "medium": {
+      "en": "Watercolor on paper",
+      "de": "Aquarell auf Papier"
+    }
+  }
+}

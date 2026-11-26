@@ -1,0 +1,26 @@
+{
+  "artist": "Clara Weiss",
+  "email": "studio@example.com",
+  "navigation": {
+    "portfolio": {
+      "en": "Portfolio",
+      "de": "Portfolio"
+    },
+    "services": {
+      "en": "Services & Commissions",
+      "de": "Leistungen & Auftragsarbeiten"
+    },
+    "about": {
+      "en": "About Me",
+      "de": "Über mich"
+    },
+    "news": {
+      "en": "News",
+      "de": "Aktuelles"
+    },
+    "contact": {
+      "en": "Contact",
+      "de": "Kontakt"
+    }
+  }
+}
