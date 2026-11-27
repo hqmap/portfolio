@@ -13,17 +13,18 @@ export function createViewer(works, caption) {
     'aria-pressed': 'false', hidden: ''
   });
   const viewport = el('div', {class: 'viewer-viewport'}, zoom);
-  const stage = el('figure', {class: 'viewer-stage'}, viewport);
-  const status = el('span', {class: 'visually-hidden', 'aria-live': 'polite'});
   const hasSteps = works.length > 1;
+  const steps = hasSteps ? el('div', {class: 'steps'}, prev, next) : null;
+  const stage = el('figure', {class: 'viewer-stage'}, viewport, steps);
+  const status = el('span', {class: 'visually-hidden', 'aria-live': 'polite'});
   const dialog = el('dialog', {class: 'viewer', 'aria-label': ui('Artwork viewer', 'Werkansicht')},
-    el('div', {class: 'viewer-controls'}, close), stage,
-    hasSteps ? el('div', {class: 'steps'}, prev, next) : null, status
+    el('div', {class: 'viewer-controls'}, close), stage, status
   );
 
   let opener;
   let current = 0;
   let image;
+  let details;
   let fitted;
   let position;
   let zoomed = false;
@@ -37,7 +38,8 @@ export function createViewer(works, caption) {
     const clamp = (offset, size, available) => size > available
       ? Math.min(0, Math.max(available - size, offset)) : (available - size) / 2;
     position = {left: clamp(left, width, viewWidth), top: clamp(top, height, viewHeight)};
-    stage.style.setProperty('--caption-offset', `-${Math.max(0, viewHeight - position.top - height)}px`);
+    // Narrow portrait layouts can place the caption just below the fitted image.
+    details?.style.setProperty('--caption-offset', `${Math.min(0, position.top + height - viewHeight)}px`);
     Object.assign(zoom.style, {
       width: `${width}px`, height: `${height}px`,
       left: `${position.left}px`, top: `${position.top}px`
@@ -45,7 +47,16 @@ export function createViewer(works, caption) {
   }
 
   function fit() {
-    if (!dialog.open || !image?.naturalWidth || !image.naturalHeight) return;
+    if (!dialog.open) return;
+    // Allow keyboard scrolling when a caption field reaches its height limit.
+    if (details) {
+      for (const field of [details, ...details.children]) {
+        const scrollable = field.scrollHeight > field.clientHeight && getComputedStyle(field).overflowY === 'auto';
+        if (scrollable) field.tabIndex = 0;
+        else field.removeAttribute('tabindex');
+      }
+    }
+    if (!image?.naturalWidth || !image.naturalHeight) return;
     const {width: viewWidth, height: viewHeight} = viewport.getBoundingClientRect();
     if (!viewWidth || !viewHeight) return;
     const scale = Math.min(viewWidth / image.naturalWidth, viewHeight / image.naturalHeight);
@@ -66,7 +77,6 @@ export function createViewer(works, caption) {
     fitted = undefined;
     viewport.classList.remove('dragging');
     zoom.setAttribute('aria-pressed', 'false');
-    stage.style.removeProperty('--caption-offset');
   }
 
   function show(index) {
@@ -77,8 +87,8 @@ export function createViewer(works, caption) {
     resetInteraction();
     zoom.hidden = !zoomHasFocus;
     zoom.style.opacity = '0';
-    stage.querySelector('figcaption')?.remove();
-    const details = caption(work);
+    details?.remove();
+    details = caption(work);
     if (details) stage.append(details);
 
     const nextImage = picture(work, true);
@@ -183,7 +193,9 @@ export function createViewer(works, caption) {
     if (!hasSteps || event.altKey || event.ctrlKey || event.metaKey) return;
     if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
       event.preventDefault();
-      show(current + (event.key === 'ArrowLeft' ? -1 : 1));
+      const previous = event.key === 'ArrowLeft';
+      if (details?.contains(event.target)) (previous ? prev : next).focus({preventScroll: true});
+      show(current + (previous ? -1 : 1));
     }
   });
   new ResizeObserver(fit).observe(viewport);
