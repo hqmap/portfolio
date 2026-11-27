@@ -116,6 +116,7 @@ footer{border-top:1px solid var(--rule)}
 }
 .viewer[open]{display:grid;grid-template-rows:auto minmax(0,1fr);gap:4px}
 .viewer::backdrop{background:#36392f}
+.viewer.viewer-pointer-focus :focus,.art-button.viewer-pointer-focus:focus{outline:none}
 body:has(.viewer[open]){overflow:hidden}
 .viewer-stage{
   display:grid;
@@ -139,8 +140,9 @@ body:has(.viewer[open]){overflow:hidden}
 .viewer-stage .caption-meta{grid-area:1/3;text-align:right}
 .viewer-stage .caption-description{--viewer-caption-height:min(18dvh,6rem);grid-area:2/1/3/-1;margin-top:2px}
 .viewer-viewport{grid-area:1/1/2/-1;position:relative;overflow:hidden;touch-action:none;min-height:0}
-.viewer-viewport:has(:focus-visible){outline:2px solid #586a4b;outline-offset:2px}
-.viewer-controls,.steps{display:flex;align-items:center}
+/* The viewport outlines the zoom control when the enlarged image edges are clipped. */
+.viewer:not(.viewer-pointer-focus) .viewer-viewport:has(.viewer-image[aria-pressed="true"]:focus-visible){outline:2px solid #586a4b;outline-offset:2px}
+.viewer-controls,.steps{display:flex;align-items:center;-webkit-user-select:none;user-select:none}
 .viewer-controls{justify-content:end}
 .steps{grid-area:2/2;justify-content:center;gap:18px;z-index:1}
 :is(.viewer-controls,.steps) button{background:transparent;border:0;padding:9px 16px;min-width:44px;min-height:44px}
@@ -148,12 +150,44 @@ body:has(.viewer[open]){overflow:hidden}
 :is(.viewer-controls,.steps) button:focus-visible{outline-offset:2px}
 .menu{background:transparent;border:1px solid var(--rule);padding:8px 15px;min-height:44px}
 .viewer-image,.viewer-adjacent{position:absolute;z-index:1}
-.viewer-image{padding:0;background:none;border:0;cursor:zoom-in;user-select:none}
+.viewer-image{padding:0;background:none;border:0;cursor:zoom-in;-webkit-user-select:none;user-select:none}
+.viewer-image:focus-visible{outline-offset:-2px}
+.viewer-image[aria-pressed="true"]:focus-visible{outline:none}
 .viewer-adjacent{top:0;left:0;width:100%;height:100%;pointer-events:none}
 .viewer-image img,.viewer-adjacent img{width:100%;height:100%;object-fit:contain}
 .viewer-image[aria-pressed="true"]{cursor:zoom-out}
 .viewer-image[aria-pressed="true"]:active{cursor:grab}
 .viewer-viewport.dragging,.viewer-viewport.dragging .viewer-image{cursor:grabbing}
+.viewer-side{display:none}
+@media(hover:hover) and (pointer:fine){
+  .viewer-image:not([hidden],[aria-pressed="true"]) ~ .viewer-side{
+    position:absolute;
+    inset-block:0;
+    width:var(--viewer-side-width,0px);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+    cursor:pointer;
+  }
+  .viewer-side-left{left:0}
+  .viewer-side-right{right:0}
+  .viewer-adjacent:not([hidden]) ~ .viewer-side{pointer-events:none}
+  .viewer-side::after{
+    content:"";
+    box-sizing:border-box;
+    flex:none;
+    width:19px;
+    height:19px;
+    border:solid currentColor;
+    border-width:2px 2px 0 0;
+    opacity:.18;
+    transform:translateX(-6px) rotate(45deg);
+  }
+  .viewer-side-left::after{transform:translateX(6px) rotate(-135deg)}
+  .viewer-side:hover::after{opacity:.3}
+  .viewer-hide-chevrons .viewer-side::after{content:none}
+}
 @media(orientation:landscape) and (max-height:500px){
   .viewer{
     --viewer-block-padding:4px;

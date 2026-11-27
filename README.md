@@ -69,6 +69,14 @@ Sveltia stores formatted text as HTML. The public renderer retains common editor
 
 Public Artwork Library images and portfolio covers suppress the default image context menu and native image dragging. Supporting browsers also suppress the image callout on long press. The artist can still manage and download images in Sveltia CMS. These measures deter casual saving. Public image files remain downloadable and screenshots are still possible.
 
+## Artwork viewer settings
+
+In `js/viewer.js`, `DESKTOP_ZOOM_SCALE` (1.3) and `MOBILE_ZOOM_SCALE` (1.5) set zoom relative to the fitted image. Mobile zoom follows the browser's coarse primary pointer setting in both orientations.
+
+`HORIZONTAL_SWIPE_THRESHOLD` (40), `FLICK_MIN_DISTANCE` (20) and `VERTICAL_SWIPE_THRESHOLD` (72) are measured in CSS pixels. `FLICK_MIN_VELOCITY` (0.5) is the minimum average horizontal speed in CSS pixels per millisecond for shorter swipes.
+
+On desktop, the empty space beside fitted artwork in multi-artwork galleries provides previous and next click areas. In `css/style.css`, the chevrons are approximately 27 px tall, with 18% resting opacity and 30% on hover. Add `viewer-hide-chevrons` to the generated dialog's class list in `js/viewer.js` to hide the chevrons while keeping the click areas.
+
 ## Verify in a disposable copy
 
 The public pages can be served at `/portfolio/` and tested in a browser without signing in. For CMS edits, use a copy of the checkout and [Sveltia's local development workflow](https://sveltiacms.app/docs/workflows/local) in a supported Chromium browser. The [Test backend](https://sveltiacms.app/docs/backends/test) can also seed the site's JSON and images for a browser-only round trip. Keep the production config on the GitHub backend.
@@ -79,6 +87,9 @@ Follow public links on desktop and through the mobile menu. Switch languages on 
 
 Open an artwork in each language and check the viewer at desktop, portrait phone and landscape phone sizes. On desktop the title, centered arrows and metadata share a bottom row. On a portrait phone the caption sits below the image and the arrows stay at the bottom. On a short landscape screen the arrows and Close sit at the top.
 
-Check that horizontal swipes, arrows and arrow keys slide in the expected direction, short swipes return the artwork to center, and up and down swipes close fitted artwork even in a single-artwork viewer. Check tap-to-zoom, zoomed panning, long and empty captions, and focus restoration. Use network throttling to check that the previous artwork stays visible during loading. Check rapid and canceled gestures and repeat with reduced motion enabled. Verify touch behavior and orientation changes on iOS Safari and Chrome on Android with physical devices.
+- Open an artwork by mouse and press Left and Right repeatedly before and after zooming. Check that the controls and artwork show no focus rings from those shortcuts. Close with the mouse and confirm focus returns to the opening artwork without an outline. Tab and Shift+Tab through the controls to check their focus rings, and test closing with Escape and with Enter on Close.
+- Click the empty areas beside landscape, square and portrait artwork in both directions. Repeat with `viewer-hide-chevrons` applied. Confirm the artwork itself toggles 130% zoom, the side areas are inactive while zoomed, and single-artwork galleries omit navigation. Click the navigation buttons repeatedly and confirm that captions can still be selected normally.
+- On a touch device, check 150% zoom, tap-to-reset and panning in both orientations. Check that short horizontal swipes and fast flicks navigate, and minor or canceled gestures return the artwork to center. Swipe up and down to close fitted artwork, including in a single-artwork viewer. Swipe while zoomed to check panning in both directions.
+- Check long and empty captions and repeat navigation with reduced motion. Throttle the network to check that the current artwork stays visible while the next artwork loads. Verify touch behavior and orientation changes on iOS Safari and Chrome on Android with physical devices.
 
 Right-click and drag the featured artwork, portfolio covers, gallery images and viewer images. Check that ordinary text and links still open their context menus. Long-press artwork on iOS Safari and Chrome on Android. Device testing is needed to verify native mobile menus because desktop emulation tests web events and CSS, while the device controls the callout.

@@ -246,11 +246,15 @@ The artist adds artworks to a gallery by selecting references to stable artwork 
 
 The fullscreen viewer fits the full optimized image in the space left by its controls and caption. It preserves image proportions, displays the entire artwork and can enlarge small sources. A desktop bottom row places the title on the left, previous and next arrows at the viewport center, and medium, year and dimensions on the right. Caption fields wrap in their own columns, and an extended description can continue below the row. Oversized fields support keyboard and touch scrolling. A single artwork omits the arrows, and empty caption fields take up no space.
 
-The viewer uses 6 px of top and bottom padding, reduced to 4 px on short landscape screens, with room for device safe areas. Close and navigation buttons have borderless styling, hover feedback and visible keyboard focus, with targets of at least 44 × 44 px. Arrow keys, Escape, focus restoration and touch swipes support navigation.
+The viewer uses 6 px of top and bottom padding, reduced to 4 px on short landscape screens, with room for device safe areas. Close and navigation buttons have borderless styling, hover feedback and targets of at least 44 × 44 px. Tab and Shift+Tab show focus on the active control. Left and Right navigate without changing the focus style established by the last interaction. Escape closes the viewer, and focus returns to the artwork that opened it. Captions remain selectable while viewer controls use non-selectable text.
 
-Pressing or tapping the artwork toggles a 130% zoom relative to its fitted size. The selected point guides the zoom and the visitor can drag to pan the enlarged image. Controls and caption remain at their normal size. In fitted mode, a horizontal touch swipe navigates and a vertical touch swipe closes the viewer, including when it contains a single artwork. The gesture locks to a dominant axis and needs at least 72 CSS pixels of travel along it. While zoomed, drags pan the image. Closing the viewer or changing artworks resets the zoom and pan.
+With a fine, hover-capable primary pointer, the empty areas beside a fitted artwork link to the previous and next works. Their centered chevrons can be hidden independently of the click areas. Side navigation is available for fitted artworks in galleries with multiple works.
 
-Artwork follows fitted swipes and returns to center when a swipe falls short or is interrupted. Horizontal swipes, navigation buttons and arrow keys slide between works in around 180 ms. The viewer background and controls stay stationary. The current work stays visible while the requested image loads, and the viewer preloads its immediate neighbors. With reduced motion enabled, the viewer switches images as soon as they are ready and skips the swipe movement.
+Pressing or tapping the artwork toggles zoom relative to its fitted size. Desktop zoom is 130%, and devices with a coarse primary pointer use 150% in either orientation. The selected point guides the zoom, and drags pan the enlarged image. A second press or tap resets it. Controls and caption remain at their normal size. Closing the viewer or changing artworks resets the zoom and pan.
+
+In fitted mode, a dominant horizontal swipe navigates after 40 CSS pixels of travel. A deliberate flick can navigate after 20 CSS pixels when its average horizontal speed is at least 0.5 CSS pixels per millisecond. A dominant vertical swipe closes the viewer after 72 CSS pixels, including in a single-artwork viewer.
+
+Artwork follows fitted swipes and returns to center when a swipe falls short or is interrupted. Horizontal swipes, side clicks, navigation buttons and arrow keys slide between works in around 180 ms. The viewer background and controls stay stationary. The current work stays visible while the requested image loads, and the viewer preloads its immediate neighbors. With reduced motion enabled, the viewer switches images as soon as they are ready and skips the swipe movement.
 
 ### 5.4. Services & Commissions
 
@@ -626,7 +630,7 @@ Prototype v2 includes:
 - The bilingual site and its established paper texture, palette, typography and navigation.
 - One artist-selected homepage artwork, with Selected Collections below it.
 - CMS-managed portfolio galleries with independent covers, optional captions and responsive masonry.
-- A fullscreen viewer with fitted image sizing, 130% zoom, panning and keyboard and touch support.
+- A fullscreen viewer with fitted image sizing, 130% desktop and 150% touch zoom, panning and keyboard, mouse and touch navigation.
 - An ordered Services & Commissions overview and dynamic bilingual service pages.
 - News overview and individual articles, About Me and Contact.
 - Sveltia CMS with a shared media library, native editing and ordering, optimized uploads, previews and GitHub PAT sign-in.
