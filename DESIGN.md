@@ -454,7 +454,8 @@ Original high-resolution artwork photographs should be archived separately rathe
 
 ### Public website image loading
 
-- Lazy loading of off-screen images.
+- Eager loading for the homepage feature, About photograph and news article cover. Offscreen gallery images use native lazy loading.
+- In browsers with cross-document transition support, newly loaded images can fade in over 100 ms when motion is enabled. The fade changes opacity and leaves the image sizing and masonry layout to the existing layout rules.
 - Valid stored dimensions reserve space when they match the image path. The browser reads intrinsic dimensions for new images and corrects dimensions when an image changes.
 - Optimized thumbnails where practical.
 - The viewer uses the full optimized image and has no additional source resolution limit.
@@ -537,6 +538,8 @@ No static site generator, JavaScript framework, Node.js environment or package m
 ### 10.3. Content rendering
 
 The HTML entry points load the shared stylesheet and the main vanilla JavaScript module. Page renderers fetch their JSON relative to the repository base, including from nested gallery pages. The renderer reads exact-locale text and default-locale shared values from each entry. Shared media values written as `/portfolio/images/…` resolve within the GitHub Pages project path.
+
+Public links use full-document navigation. Supporting browsers can crossfade ready documents in 140 ms while showing the destination header at full opacity. The main module registers the readiness check before the first paint. If JSON or eager imagery is still loading when the browser is ready to start a transition, the browser skips the crossfade and displays the destination as it loads. Late main content eases into view over 120 ms. These effects require browser support for cross-document view transitions and honor the visitor's reduced-motion preference.
 
 Artworks, galleries, services and news articles are stored as arrays of Sveltia single-file entries with `en` and `de` objects. Website pages are individual bilingual JSON files. `content/galleries.json` provides the category order and stores references to the Artwork Library in saved order. Settings, covers and relationships are editable through native CMS fields.
 

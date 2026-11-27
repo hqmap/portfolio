@@ -1,5 +1,6 @@
 const root = new URL('../', import.meta.url);
 export const query = new URLSearchParams(location.search);
+export const supportsPageTransitions = 'CSSViewTransitionRule' in window && 'onpagereveal' in window;
 
 let preference;
 try { preference = localStorage.getItem('catalogue-language'); } catch {}
@@ -78,6 +79,7 @@ export function picture({image, alt, pixelSize}, eager = false) {
     if (img.naturalWidth && img.naturalHeight) {
       img.width = img.naturalWidth;
       img.height = img.naturalHeight;
+      if (supportsPageTransitions) img.classList.add('image-arrival');
     }
   }, {once: true});
   const src = mediaUrl(image);

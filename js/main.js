@@ -1,12 +1,31 @@
 import {
   artwork, contentLink, el, items, language, load, localized, mediaUrl, picture, query,
-  richText, shared, text, ui, url
+  richText, shared, supportsPageTransitions, text, ui, url
 } from './content.js';
 import {renderArtworkSet} from './gallery.js';
 
 const page = document.body.dataset.page;
 const main = document.querySelector('main');
 const entryId = query.get('id');
+
+let rendered = false;
+let revealed = false;
+
+function skipPendingTransition({viewTransition}) {
+  if (!viewTransition) return;
+  const eagerImages = [...main.querySelectorAll('img[loading="eager"]')];
+  if (!rendered || eagerImages.some(img => !img.complete)) {
+    // Skipping the animation rejects ready while ordinary navigation continues.
+    viewTransition.ready.catch(() => {});
+    viewTransition.skipTransition();
+  }
+}
+
+window.addEventListener('pageswap', skipPendingTransition);
+window.addEventListener('pagereveal', event => {
+  revealed = true;
+  skipPendingTransition(event);
+});
 
 const link = (path, label, className) => el('a', {href: url(path), class: className}, label);
 const back = (path, label) => link(path, '← ' + label, 'back');
@@ -296,6 +315,9 @@ async function render() {
   else if (page === 'contact') title = renderContact(contact);
   else if (page === 'news' || page === 'article') title = await renderNews();
   document.title = title + ' · ' + shared(settings).artist;
+
+  rendered = true;
+  if (supportsPageTransitions && revealed) main.classList.add('page-arrival');
 }
 
 render().catch(error => {
