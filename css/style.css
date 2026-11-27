@@ -204,3 +204,17 @@ body:has(.viewer[open]){overflow:hidden}
 }
 .editorial > div{min-width:0}
 .interior h1{hyphens:auto;overflow-wrap:anywhere}
+@media(prefers-reduced-motion:no-preference){
+  @view-transition{navigation:auto}
+  body[data-page]>header{view-transition-name:site-header}
+  ::view-transition-group(root),::view-transition-group(site-header){animation:none}
+  ::view-transition-old(root),::view-transition-new(root){
+    animation-duration:140ms;
+    animation-timing-function:ease-out;
+  }
+  ::view-transition-old(site-header){display:none}
+  ::view-transition-new(site-header){animation:none}
+  .page-arrival{animation:content-arrival 120ms ease-out}
+  .image-arrival{animation:content-arrival 100ms ease-out}
+  @keyframes content-arrival{from{opacity:.85}}
+}
