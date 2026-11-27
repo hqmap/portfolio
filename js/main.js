@@ -12,11 +12,34 @@ const entryId = query.get('id');
 const link = (path, label, className) => el('a', {href: url(path), class: className}, label);
 const back = (path, label) => link(path, '← ' + label, 'back');
 
+function instagramProfileUrl(social) {
+  const profile = /^https?:\/\/(?:www\.)?instagram\.com\/(\w(?:[\w.]{0,28}\w)?)\/?(?:[?#]\S*)?$/i;
+  const sections = ['about', 'accounts', 'direct', 'explore', 'p', 'reel', 'reels', 'share', 'stories', 'tv'];
+  for (const entry of items(social)) {
+    const href = text(entry?.href);
+    const username = profile.exec(href)?.[1];
+    if (username && !username.includes('..') && !sections.includes(username.toLowerCase())) return href;
+  }
+}
+
 function renderChrome(settings, contact, active) {
+  const {email, social} = shared(contact);
   const navigation = localized(settings).navigation;
   const nav = el('nav', {id: 'navigation', 'aria-label': ui('Main navigation', 'Hauptnavigation')});
   for (const id of ['portfolio', 'services', 'about', 'news', 'contact']) {
     nav.append(el('a', {href: url(id), 'aria-current': active === id ? 'page' : undefined}, navigation[id]));
+  }
+  const instagramUrl = instagramProfileUrl(social);
+  if (instagramUrl) {
+    const instagram = el('a', {class: 'nav-instagram', href: instagramUrl, 'aria-label': 'Instagram'});
+    instagram.innerHTML = `
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+        aria-hidden="true" focusable="false">
+        <rect x="2" y="2" width="20" height="20" rx="5"/>
+        <circle cx="12" cy="12" r="4"/>
+        <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>
+      </svg>`;
+    nav.append(instagram);
   }
 
   const languages = el('div', {class: 'languages'});
@@ -49,7 +72,7 @@ function renderChrome(settings, contact, active) {
     el('div', {class: 'mast wrap'}, brand(), nav, languages, menu)
   );
   document.querySelector('footer').append(el('div', {class: 'wrap foot'},
-    brand(), el('small', {}, '© ' + new Date().getFullYear() + ' ' + artist), emailLink(shared(contact).email)
+    brand(), el('small', {}, '© ' + new Date().getFullYear() + ' ' + artist), emailLink(email)
   ));
 }
 
