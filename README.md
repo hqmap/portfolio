@@ -14,6 +14,10 @@ Open `http://127.0.0.1:8327/portfolio/` for the site and `http://127.0.0.1:8327/
 
 Use `?lang=en` or `?lang=de` to test each locale. The language switcher preserves the page and its `id` query parameter. Direct detail URLs include `gallery.html?id=design&lang=en`, `article.html?id=by-the-water&lang=en` and `service.html?id=painting-classes&lang=de`.
 
+## Replace the favicon
+
+Replace `favicon.png` in the repository root with your own PNG of the same name. A transparent 32 × 32 px image works well at browser-tab sizes. The replacement applies to both languages and the legacy gallery URLs. Browsers can cache favicons after publishing. If the old icon persists, check in a private window or clear the site's cached data.
+
 ## Edit content with Sveltia
 
 Open the production [Content Manager](https://hqmap.github.io/portfolio/admin/) once the revision is deployed. The admin uses Sveltia CMS **0.273.1**, the GitHub backend for `hqmap/portfolio` and simple publishing. Only the admin downloads Sveltia.
@@ -75,7 +79,7 @@ In `js/viewer.js`, `DESKTOP_ZOOM_SCALE` (1.3) and `MOBILE_ZOOM_SCALE` (1.5) set 
 
 `HORIZONTAL_SWIPE_THRESHOLD` (40), `FLICK_MIN_DISTANCE` (20) and `VERTICAL_SWIPE_THRESHOLD` (72) are measured in CSS pixels. `FLICK_MIN_VELOCITY` (0.5) is the minimum average horizontal speed in CSS pixels per millisecond for shorter swipes.
 
-On desktop, the empty space beside fitted artwork in multi-artwork galleries provides previous and next click areas. In `css/style.css`, the chevrons are approximately 27 px tall, with 18% resting opacity and 30% on hover. Add `viewer-hide-chevrons` to the generated dialog's class list in `js/viewer.js` to hide the chevrons while keeping the click areas.
+On desktop, the empty space beside fitted artwork in multi-artwork galleries provides previous and next click areas. The chevrons sit about 7.5% in from the viewer edges at a fixed height through artwork transitions. In `css/style.css`, the chevrons are approximately 27 px tall, with 18% resting opacity and 30% on hover. Add `viewer-hide-chevrons` to the generated dialog's class list in `js/viewer.js` to hide the chevrons while keeping the click areas. Previous and next buttons appear in the upper left when reached by Tab or when a wide artwork leaves too little room at the sides.
 
 ## Verify in a disposable copy
 
@@ -85,11 +89,13 @@ In the disposable editor, create, rename, reorder and remove galleries with the 
 
 Follow public links on desktop and through the mobile menu. Switch languages on a detail page and use browser Back and Forward at both viewport sizes. On a ready destination, a supporting browser can crossfade the page in 140 ms while the header stays at full opacity. Repeat with the cache disabled and network throttling enabled. The browser displays slow destinations as they load, and late content and images use short opacity fades where supported. Enable reduced motion and check that page and image motion is disabled.
 
-Open an artwork in each language and check the viewer at desktop, portrait phone and landscape phone sizes. On desktop the title, centered arrows and metadata share a bottom row. On a portrait phone the caption sits below the image and the arrows stay at the bottom. On a short landscape screen the arrows and Close sit at the top.
+Open an artwork in each language and check the viewer at desktop, portrait phone and landscape phone sizes. The desktop caption row has the title on the left and metadata on the right. On a portrait phone the caption sits below the image and the arrows stay at the bottom. On a short landscape screen the arrows and Close sit at the top.
 
 - Open an artwork by mouse and press Left and Right repeatedly before and after zooming. Check that the controls and artwork show no focus rings from those shortcuts. Close with the mouse and confirm focus returns to the opening artwork without an outline. Tab and Shift+Tab through the controls to check their focus rings, and test closing with Escape and with Enter on Close.
-- Click the empty areas beside landscape, square and portrait artwork in both directions. Repeat with `viewer-hide-chevrons` applied. Confirm the artwork itself toggles 130% zoom, the side areas are inactive while zoomed, and single-artwork galleries omit navigation. Click the navigation buttons repeatedly and confirm that captions can still be selected normally.
+- Click near the outer edge and the artwork edge of both empty areas beside landscape, square and portrait artwork. Check that the chevrons stay in place through slides. Repeat with `viewer-hide-chevrons` applied. Open a panorama that reaches the chevron positions and use the upper-left arrows to navigate. Confirm the artwork itself toggles 130% zoom, the side areas are inactive while zoomed, and single-artwork galleries omit navigation. Click the navigation buttons repeatedly and confirm that captions can still be selected normally.
 - On a touch device, check 150% zoom, tap-to-reset and panning in both orientations. Check that short horizontal swipes and fast flicks navigate, and minor or canceled gestures return the artwork to center. Swipe up and down to close fitted artwork, including in a single-artwork viewer. Swipe while zoomed to check panning in both directions.
 - Check long and empty captions and repeat navigation with reduced motion. Throttle the network to check that the current artwork stays visible while the next artwork loads. Verify touch behavior and orientation changes on iOS Safari and Chrome on Android with physical devices.
+
+Check the footer baselines on desktop and mobile. Try a longer artist name in Website Settings and a longer email address in Contact to verify wrapping and link behavior. Check the browser-tab icon on public pages, including a legacy gallery URL, in both languages.
 
 Right-click and drag the featured artwork, portfolio covers, gallery images and viewer images. Check that ordinary text and links still open their context menus. Long-press artwork on iOS Safari and Chrome on Android. Device testing is needed to verify native mobile menus because desktop emulation tests web events and CSS, while the device controls the callout.
