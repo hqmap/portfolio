@@ -9,6 +9,9 @@ const FLICK_MIN_DISTANCE = 20;
 const FLICK_MIN_VELOCITY = 0.5; // CSS pixels per millisecond.
 const AXIS_RATIO = 1.2;
 const SLIDE_DURATION = 180;
+const CHEVRON_INSET = .075;
+const CHEVRON_CLEARANCE = 10;
+const MIN_SIDE_TARGET = 44;
 
 function swipeAxis(dx, dy) {
   const x = Math.abs(dx);
@@ -58,6 +61,7 @@ export function createViewer(works, caption) {
   let destination;
   let details;
   let fitted;
+  let sideLayout;
   let position;
   let zoomScale = 1;
   let pointer;
@@ -100,6 +104,27 @@ export function createViewer(works, caption) {
     });
   }
 
+  function fitSideNavigation(view) {
+    const frame = dialog.getBoundingClientRect();
+    if (sideLayout?.width !== frame.width || sideLayout.height !== frame.height
+        || sideLayout.viewLeft !== view.left || sideLayout.viewRight !== view.right) {
+      const inset = frame.width * CHEVRON_INSET;
+      const left = Math.max(CHEVRON_CLEARANCE, frame.left + inset - view.left);
+      const right = Math.max(CHEVRON_CLEARANCE, view.right - frame.right + inset);
+      sideLayout = {
+        width: frame.width, height: frame.height, viewLeft: view.left, viewRight: view.right,
+        minimumWidth: Math.max(MIN_SIDE_TARGET, Math.max(left, right) + CHEVRON_CLEARANCE)
+      };
+      viewport.style.setProperty('--viewer-chevron-left', `${left}px`);
+      viewport.style.setProperty('--viewer-chevron-right', `${right}px`);
+      // Keep the centerline steady if a new caption changes the artwork's fitted height.
+      viewport.style.setProperty('--viewer-chevron-top', `${view.height / 2}px`);
+    }
+    const sideWidth = Math.max(0, fitted.left);
+    viewport.style.setProperty('--viewer-side-width', `${sideWidth}px`);
+    dialog.classList.toggle('viewer-side-fallback', sideWidth < sideLayout.minimumWidth);
+  }
+
   function fit() {
     if (!dialog.open) return;
     // Allow keyboard scrolling when a caption field reaches its height limit.
@@ -112,7 +137,8 @@ export function createViewer(works, caption) {
     }
     if (!artwork?.ready) return;
     const {naturalWidth, naturalHeight} = artwork.image;
-    const {width: viewWidth, height: viewHeight} = viewport.getBoundingClientRect();
+    const view = viewport.getBoundingClientRect();
+    const {width: viewWidth, height: viewHeight} = view;
     if (!viewWidth || !viewHeight) return;
     if (fitted?.viewWidth === viewWidth && fitted.viewHeight === viewHeight) return;
     if (fitted) {
@@ -124,7 +150,7 @@ export function createViewer(works, caption) {
     const height = naturalHeight * scale;
     fitted = {width, height, left: (viewWidth - width) / 2, top: (viewHeight - height) / 2, viewWidth, viewHeight};
     place((viewWidth - width * zoomScale) / 2, (viewHeight - height * zoomScale) / 2);
-    viewport.style.setProperty('--viewer-side-width', `${Math.max(0, fitted.left)}px`);
+    if (hasSteps) fitSideNavigation(view);
     zoom.hidden = false;
   }
 
@@ -423,6 +449,7 @@ export function createViewer(works, caption) {
     dialog,
     open(index, trigger, fromPointer) {
       opener = trigger;
+      sideLayout = undefined;
       endDrag();
       clearMotion();
       destination = undefined;

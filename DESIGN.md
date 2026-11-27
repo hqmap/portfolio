@@ -197,7 +197,7 @@ A minimal footer containing:
 - Social media links, if applicable.
 - Privacy and legal information, where applicable.
 
-The footer should remain visually secondary to the main content.
+The footer should remain visually secondary to the main content. The artist's homepage link, copyright notice and email share a typographic baseline on each row. Long names and email addresses wrap within the available width.
 
 ## 5. Individual page designs
 
@@ -244,11 +244,11 @@ The artist adds artworks to a gallery by selecting references to stable artwork 
 
 **Expanded artwork viewer**
 
-The fullscreen viewer fits the full optimized image in the space left by its controls and caption. It preserves image proportions, displays the entire artwork and can enlarge small sources. A desktop bottom row places the title on the left, previous and next arrows at the viewport center, and medium, year and dimensions on the right. Caption fields wrap in their own columns, and an extended description can continue below the row. Oversized fields support keyboard and touch scrolling. A single artwork omits the arrows, and empty caption fields take up no space.
+The fullscreen viewer fits the full optimized image in the space left by its controls and caption. It preserves image proportions, displays the entire artwork and can enlarge small sources. A desktop bottom row places the title on the left and medium, year and dimensions on the right. Caption fields wrap in their own columns, and an extended description can continue below the row. Oversized fields support keyboard and touch scrolling. A single artwork omits the arrows, and empty caption fields take up no space.
 
 The viewer uses 6 px of top and bottom padding, reduced to 4 px on short landscape screens, with room for device safe areas. Close and navigation buttons have borderless styling, hover feedback and targets of at least 44 × 44 px. Tab and Shift+Tab show focus on the active control. Left and Right navigate without changing the focus style established by the last interaction. Escape closes the viewer, and focus returns to the artwork that opened it. Captions remain selectable while viewer controls use non-selectable text.
 
-With a fine, hover-capable primary pointer, the empty areas beside a fitted artwork link to the previous and next works. Their centered chevrons can be hidden independently of the click areas. Side navigation is available for fitted artworks in galleries with multiple works.
+With a fine, hover-capable primary pointer, all empty space to either side of a stationary, fitted artwork links to the previous and next works in multi-artwork galleries. The chevrons sit about 7.5% in from the viewer edges. Their vertical centerline is set when the viewer opens or resizes, so it stays steady as artworks and captions change during navigation. The chevrons can be hidden independently of the click areas. When a wide artwork leaves too little room beside it, the chevrons give way to previous and next buttons in the upper left. These buttons also appear when Tab reaches them or while the viewer has no displayable image. They remain available to screen readers and take up no space in the desktop caption row.
 
 Pressing or tapping the artwork toggles zoom relative to its fitted size. Desktop zoom is 130%, and devices with a coarse primary pointer use 150% in either orientation. The selected point guides the zoom, and drags pan the enlarged image. A second press or tap resets it. Controls and caption remain at their normal size. Closing the viewer or changing artworks resets the zoom and pan.
 
@@ -525,6 +525,7 @@ No static site generator, JavaScript framework, Node.js environment or package m
     portfolio/
     ├── index.html, portfolio.html, gallery.html, services.html, service.html
     ├── about.html, contact.html, news.html, article.html
+    ├── favicon.png
     ├── galleries/
     │   └── design.html, illustration.html, portraits.html, creative-projects.html
     ├── css/style.css
@@ -548,6 +549,8 @@ No static site generator, JavaScript framework, Node.js environment or package m
 ### 10.3. Content rendering
 
 The HTML entry points load the shared stylesheet and the main vanilla JavaScript module. Page renderers fetch their JSON relative to the repository base, including from nested gallery pages. The renderer reads exact-locale text and default-locale shared values from each entry. Shared media values written as `/portfolio/images/…` resolve within the GitHub Pages project path.
+
+The public entry points share a small, transparent watercolor favicon in both languages. Relative icon links resolve to the repository's `favicon.png` from top-level pages and the nested legacy gallery URLs.
 
 Public links use full-document navigation. Supporting browsers can crossfade ready documents in 140 ms while showing the destination header at full opacity. The main module registers the readiness check before the first paint. If JSON or eager imagery is still loading when the browser is ready to start a transition, the browser skips the crossfade and displays the destination as it loads. Late main content eases into view over 120 ms. These effects require browser support for cross-document view transitions and honor the visitor's reduced-motion preference.
 
