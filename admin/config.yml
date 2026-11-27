@@ -100,7 +100,7 @@ collections:
             required: false
             fields:
               - {name: label, label: Profile name, widget: string}
-              - {name: href, label: Profile URL, widget: string}
+              - {name: href, label: Profile URL, widget: string, hint: 'A full Instagram profile URL also appears in the site navigation.'}
 
   - name: artworks
     label: Artwork Library

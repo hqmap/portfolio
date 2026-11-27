@@ -45,6 +45,8 @@ The artist's name, displayed in the upper-left corner, functions as a link to th
 
 A language switcher labelled **EN / DE** is positioned alongside the main navigation.
 
+When configured, the Instagram link appears after Contact and before the language switcher on desktop. On mobile it appears below Contact inside the expanded menu.
+
 ### 2.2. Portfolio categories
 
 | Ukrainian reference | English | German |
@@ -177,6 +179,8 @@ The desktop header consists of three primary elements:
 - English/German language switcher.
 
 The active page is indicated by a subtle underline or accent color.
+
+The Instagram link uses a 20 px inline SVG outline with a transparent background. It inherits the navigation text and hover colors and has a 44 × 44 px target, an accessible name and a visible keyboard focus indicator.
 
 The header should be consistent across all pages, with sufficient vertical space to create a calm, uncluttered appearance.
 
@@ -375,7 +379,7 @@ Sveltia CMS provides the administrative interface at [`/portfolio/admin/`](https
 
 ### 7.2. CMS content organization
 
-- **Website Pages** manages the homepage, Portfolio overview, Services overview, About Me, News overview and Contact. The homepage selects a featured artwork. Contact holds the studio email used in the footer, along with optional phone and social links.
+- **Website Pages** manages the homepage, Portfolio overview, Services overview, About Me, News overview and Contact. The homepage selects a featured artwork. Contact holds the studio email used in the footer, along with optional phone and social links. The first valid Instagram profile URL in the shared Social links list supplies the navigation icon in both languages.
 - **Artwork Library** manages images, stable identifiers and artwork metadata.
 - **Portfolio Galleries & Covers** contains a file for each of the four galleries. Each gallery has a translated title and introduction, shared cover artwork or dedicated cover image, and a draggable list of artwork references.
 - **Services & Commissions** manages the ordered service categories, covers, translated editorial content, photo lists and inquiry links.

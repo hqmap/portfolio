@@ -25,6 +25,8 @@ Open the production [Content Manager](https://hqmap.github.io/portfolio/admin/) 
 5. In **Services & Commissions**, add the English and German titles and descriptions and choose a cover. Add optional photographs with translated captions and alt text. Use the collection's reorder control to change the sequence shown on the public overview. An inquiry requires a destination and a label for the language where it should appear.
 6. Edit the biography, contact details and other overview copy under **Website Pages**. Manage posts under **News Articles** and the name and navigation labels under **Website Settings**. Use **Assets** to browse uploaded images.
 
+To show the Instagram icon, add your profile name and full Instagram profile URL under **Website Pages → Contact → Social links** in the English pane. The navigation uses the first valid Instagram profile URL for both languages. When the list contains no valid Instagram profile URL, the icon takes up no space.
+
 The preview pane uses the public fonts and colors and shows draft content, including images, formatted text and gallery order. Its gallery preview uses simple columns. The public pages provide masonry placement, the artwork viewer and complete site navigation. Existing images may be selected through the Asset Library, and uploads are optimized to WebP at quality 94 with a 2800 px bounding box. Artwork images keep their aspect ratios. Retain separate archival scans. The public gallery and viewer share the full optimized image.
 
 ### Owner sign-in and publishing
