@@ -122,49 +122,32 @@ collections:
 
   - name: galleries
     label: Portfolio Galleries & Covers
+    label_singular: Gallery
+    file: content/galleries.json
     i18n: true
-    files:
-      - name: design
-        label: Design
-        file: content/galleries/design.json
-        i18n: true
-        preview_path: 'portfolio/galleries/design.html?lang={{locale}}'
-        fields: &gallery-fields
-          - *title
-          - {<<: *intro, name: description}
-          - {<<: *artwork-relation, name: cover, label: Cover artwork}
-          - {<<: *optional-image, name: coverImage, label: Dedicated cover image, hint: 'Select or upload an image to use in place of the cover artwork.'}
-          - {<<: *alt, name: coverAlt, label: Dedicated cover alternative text}
-          - name: works
-            label: Artwork order
-            label_singular: Artwork
-            widget: list
-            i18n: duplicate
-            required: false
-            collapsed: true
-            allow_reorder: true
-            allow_duplicate: false
-            summary: '{{fields.artwork}}'
-            fields:
-              - {<<: *artwork-relation, name: artwork, label: Artwork, required: true}
-      - name: illustration
-        label: Illustration
-        file: content/galleries/illustration.json
-        i18n: true
-        preview_path: 'portfolio/galleries/illustration.html?lang={{locale}}'
-        fields: *gallery-fields
-      - name: portraits
-        label: Portraits
-        file: content/galleries/portraits.json
-        i18n: true
-        preview_path: 'portfolio/galleries/portraits.html?lang={{locale}}'
-        fields: *gallery-fields
-      - name: creative-projects
-        label: Creative Projects
-        file: content/galleries/creative-projects.json
-        i18n: true
-        preview_path: 'portfolio/galleries/creative-projects.html?lang={{locale}}'
-        fields: *gallery-fields
+    identifier_field: id
+    summary: '{{title}}'
+    thumbnail: coverImage
+    preview_path: 'portfolio/gallery.html?id={{fields.id}}&lang={{locale}}'
+    fields:
+      - {<<: *id, label: Gallery ID}
+      - *title
+      - {<<: *intro, name: description}
+      - {<<: *artwork-relation, name: cover, label: Cover artwork}
+      - {<<: *optional-image, name: coverImage, label: Dedicated cover image, hint: 'Select or upload an image to use in place of the cover artwork.'}
+      - {<<: *alt, name: coverAlt, label: Cover alternative text, hint: 'Describe the dedicated image or the selected cover artwork.'}
+      - name: works
+        label: Artwork order
+        label_singular: Artwork
+        widget: list
+        i18n: duplicate
+        required: false
+        collapsed: true
+        allow_reorder: true
+        allow_duplicate: false
+        summary: '{{fields.artwork}}'
+        fields:
+          - {<<: *artwork-relation, name: artwork, label: Artwork, required: true}
 
   - name: services
     label: Services & Commissions
