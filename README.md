@@ -61,4 +61,4 @@ Sveltia stores formatted text as HTML. The public renderer retains common editor
 
 The public pages can be served at `/portfolio/` and tested in a browser without signing in. For CMS edits, use a copy of the checkout and [Sveltia's local development workflow](https://sveltiacms.app/docs/workflows/local) in a supported Chromium browser. The [Test backend](https://sveltiacms.app/docs/backends/test) can also seed the site's JSON and images for a browser-only round trip. Keep the production config on the GitHub backend.
 
-Test both languages and check the gallery order, covers, homepage artwork and service URLs after saving. The repository owner's authenticated PAT login and first live publishing check take place on the deployed revision.
+Test both languages and check the gallery order, covers, homepage artwork and service URLs after saving. On the homepage, check the spacing above landscape and portrait featured artwork at desktop and mobile widths. The repository owner's authenticated PAT login and first live publishing check take place on the deployed revision.

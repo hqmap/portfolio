@@ -28,7 +28,7 @@ nav a[aria-current],.languages a[aria-current]{text-decoration:underline;text-un
 .skip{position:absolute;top:-80px;background:white;padding:6px}
 .skip:focus{top:0}
 .visually-hidden{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
-.hero{padding-block:clamp(40px,4.7vw,82px) clamp(40px,4vw,70px)}
+.hero{padding-block:20px clamp(40px,4vw,70px)}
 h1{font-size:clamp(58px,6.8vw,108px);letter-spacing:-.05em}
 .section-title p,.editorial p,.article p,.news-entry p,.rich-text{color:var(--soft);max-width:48ch}
 .feature{margin-inline:auto}
@@ -148,7 +148,7 @@ body:has(.viewer[open]){overflow:hidden}
 @media(max-width:650px){
   .wrap{width:88%}.mast{min-height:72px;gap:15px}.brand{font-size:34px}
   .editorial,.news-entry{grid-template-columns:1fr;gap:30px}
-  .hero{padding-block:36px}
+  .hero{padding-block:14px 36px}
   .feature img{border-width:5px}
   .section-bar{align-items:baseline;flex-wrap:wrap;gap:8px}.selected{padding:28px 0}
   .collections,.service-gallery{grid-template-columns:1fr;gap:28px}
