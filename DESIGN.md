@@ -49,6 +49,8 @@ When configured, the Instagram link appears after Contact and before the languag
 
 ### 2.2. Portfolio categories
 
+The artist creates, translates, edits, reorders and deletes portfolio categories in Sveltia CMS. Each category has a gallery URL based on its stable ID. The initial collection preserves these galleries.
+
 | Ukrainian reference | English | German |
 |---|---|---|
 | Дизайн | Design | Design |
@@ -56,16 +58,11 @@ When configured, the Instagram link appears after Contact and before the languag
 | Портрети | Portraits | Porträts |
 | Творчі проєкти | Creative Projects | Künstlerische Projekte |
 
-Each category has its own dedicated gallery page.
-
 ### 2.3. Sitemap
 
 - Home
 - Portfolio
-  - Design
-  - Illustration
-  - Portraits
-  - Creative Projects
+  - Individual gallery pages generated from CMS entries
 - Services & Commissions
   - Individual service pages generated from CMS entries
 - About Me
@@ -208,24 +205,17 @@ The footer should remain visually secondary to the main content.
 
 The homepage opens with one large, artist-selected artwork inside the existing content margins. It uses the available width for landscape images and keeps square and portrait images comfortably sized. Images retain their proportions and can be opened in the artwork viewer. When artwork information is available, it appears below the image in the same caption style as the galleries. The hero uses 20 px of top padding below the header, reduced to 14 px at viewport widths of 650 px and below.
 
-Selected Collections remains below the featured artwork and uses the same category covers as the Portfolio overview. The header, language switcher, paper background and footer frame the artwork.
+Selected Collections remains below the featured artwork. It shows up to the first four categories in the same order and with the same covers as the Portfolio overview. The header, language switcher, paper background and footer frame the artwork.
 
 The CMS provides one featured artwork selection shared by both languages. The artwork and Selected Collections provide the homepage introduction.
 
 ### 5.2. Portfolio overview
 
-The portfolio overview displays four distinct categories:
-
-- Design.
-- Illustration.
-- Portraits.
-- Creative Projects.
-
-Each category is represented by a large preview image and category title.
+The portfolio overview displays all categories in the order set in Sveltia CMS. Each category is represented by a large preview image and category title.
 
 Desktop layout:
 
-- Two-column, two-row image grid.
+- Two-column image grid.
 - Generous spacing between categories.
 - Consistent image preview proportions.
 
@@ -236,11 +226,11 @@ Mobile layout:
 
 Clicking anywhere within a category preview opens the corresponding gallery page.
 
-The artist can choose an artwork by its stable ID or select or upload a dedicated cover image through the CMS. The selection is shared by both languages and used on the Portfolio overview and in Selected Collections. A dedicated image takes precedence. If the dedicated file is unavailable, the site tries the cover artwork. If that reference is unavailable, it uses the first available gallery work. An empty category remains accessible from its labeled preview.
+The artist can choose an artwork by its stable ID or select or upload a dedicated cover image through the CMS. The selection is shared by both languages and used on the Portfolio overview and in Selected Collections. Cover alternative text can be translated. A dedicated image takes precedence. If the dedicated file is unavailable, the site tries the cover artwork. If that reference is unavailable, it uses the first available gallery work. An empty category remains accessible from its labeled preview.
 
 ### 5.3. Category gallery pages
 
-Each category has its own dedicated page containing a category heading, optional introductory text, an artwork gallery and a link back to the Portfolio overview.
+Each category has a page containing a category heading, optional introductory text, an artwork gallery and a link back to the Portfolio overview. Portfolio stays active in the main navigation. The shared `gallery.html` entry point reads the category ID from the URL, and the language switcher preserves it. A missing, unknown or deleted ID displays a localized unavailable message with a link to the overview.
 
 The responsive masonry gallery uses equal-width columns and consistent gaps. It places the first artworks across the top from left to right, then places each next artwork in the shortest column, breaking ties from left to right. The layout measures image and caption heights and updates when viewport, fonts or card heights change. The CMS order also determines document order, focus order and viewer navigation. Each artwork retains its original aspect ratio.
 
@@ -363,9 +353,9 @@ The website will support English and German using Sveltia CMS's built-in interna
 | Service titles, introductions, descriptions, captions and inquiry labels | Translated |
 | Artwork and service photographs | Shared |
 | Portfolio covers and featured artwork selection | Shared |
-| Artwork, service and article identifiers | Shared |
+| Artwork, gallery, service and article identifiers | Shared |
 | Service and photograph ordering | Shared |
-| Gallery ordering | Shared |
+| Portfolio category and gallery artwork ordering | Shared |
 | Artwork dimensions | Shared |
 | Creation year | Shared |
 | Publication dates | Shared |
@@ -385,7 +375,7 @@ Sveltia CMS provides the administrative interface at [`/portfolio/admin/`](https
 
 - **Website Pages** manages the homepage, Portfolio overview, Services overview, About Me, News overview and Contact. The homepage selects a featured artwork. Contact holds the studio email used in the footer, along with optional phone and social links. The first valid Instagram profile URL in the shared Social links list supplies the navigation icon in both languages.
 - **Artwork Library** manages images, stable identifiers and artwork metadata.
-- **Portfolio Galleries & Covers** contains a file for each of the four galleries. Each gallery has a translated title and introduction, shared cover artwork or dedicated cover image, and a draggable list of artwork references.
+- **Portfolio Galleries & Covers** manages the ordered collection of galleries. Each gallery has a stable ID, a shared cover artwork or dedicated cover image, and a draggable list of artwork references. Titles, introductions and cover alternative text can be translated. Introductions and cover alternative text are optional.
 - **Services & Commissions** manages the ordered service categories, covers, translated editorial content, photo lists and inquiry links.
 - **News Articles** manages publications, dates, cover images and formatted articles.
 - **Website Settings** manages the artist name and translated navigation labels.
@@ -397,13 +387,15 @@ The interface exposes content fields. Page structure and technical configuration
 
 The artist can upload an image once, add optional artwork information and select the artwork in any gallery. The gallery's reorderable list controls public order for both languages. A separate selection controls each cover and the homepage artwork.
 
+The artist can create, rename, reorder and delete categories in the galleries collection. Sveltia generates an ID for a new gallery. The same gallery ID serves both languages and stays in place when the gallery is renamed or moved. Deleting a gallery removes its references to artwork. The Artwork Library and other galleries keep their entries.
+
 The artist can create, edit, reorder and delete services in the ordered services collection. A new service receives a stable ID. Its cover and photos are shared, while titles, introductions, descriptions, image captions, alternative text and inquiry labels can be translated independently. English and German content live in the same entry.
 
 The CMS provides visual rich-text editing for descriptions, biographies and articles. Editors can preview entries before publishing and update contact details through the same interface.
 
 ### 7.4. Live preview
 
-The Sveltia preview pane uses the public stylesheet and local fonts, along with templates for the homepage, artworks, galleries and editorial entries. The templates display the current locale and use Sveltia's asset and relation preview data. Gallery previews show the saved or draft sequence, and the public pages provide the responsive masonry layout and interactive viewer.
+The Sveltia preview pane uses the public stylesheet and local fonts, along with templates for the homepage, artworks, galleries and editorial entries. The templates display the current locale and use Sveltia's asset and relation preview data. Each gallery entry uses the same preview template and shows its saved or draft cover and artwork sequence. The public pages provide the responsive masonry layout and interactive viewer.
 
 ### 7.5. Authentication
 
@@ -520,7 +512,7 @@ No static site generator, JavaScript framework, Node.js environment or package m
 ### 10.2. Repository structure
 
     portfolio/
-    ├── index.html, portfolio.html, services.html, service.html
+    ├── index.html, portfolio.html, gallery.html, services.html, service.html
     ├── about.html, contact.html, news.html, article.html
     ├── galleries/
     │   └── design.html, illustration.html, portraits.html, creative-projects.html
@@ -528,11 +520,9 @@ No static site generator, JavaScript framework, Node.js environment or package m
     ├── js/
     │   └── main.js, content.js, gallery.js, viewer.js
     ├── content/
-    │   ├── artworks.json, services.json, news.json
+    │   ├── artworks.json, galleries.json, services.json, news.json
     │   ├── home.json, portfolio.json, services-overview.json
-    │   ├── about.json, contact.json, news-overview.json, settings.json
-    │   └── galleries/
-    │       └── design.json, illustration.json, portraits.json, creative-projects.json
+    │   └── about.json, contact.json, news-overview.json, settings.json
     ├── images/
     │   ├── artworks/
     │   └── textures/
@@ -548,9 +538,9 @@ No static site generator, JavaScript framework, Node.js environment or package m
 
 The HTML entry points load the shared stylesheet and the main vanilla JavaScript module. Page renderers fetch their JSON relative to the repository base, including from nested gallery pages. The renderer reads exact-locale text and default-locale shared values from each entry. Shared media values written as `/portfolio/images/…` resolve within the GitHub Pages project path.
 
-Artworks, services and news articles are stored as ordered arrays of Sveltia single-file entries with `en` and `de` objects. Website pages and galleries are individual bilingual JSON files. Gallery files store references to the Artwork Library in saved order. Settings, covers and relationships are editable through native CMS fields.
+Artworks, galleries, services and news articles are stored as arrays of Sveltia single-file entries with `en` and `de` objects. Website pages are individual bilingual JSON files. `content/galleries.json` provides the category order and stores references to the Artwork Library in saved order. Settings, covers and relationships are editable through native CMS fields.
 
-News and services use reusable static detail pages. Example URLs include `article.html?id=by-the-water&lang=en` and `service.html?id=painting-classes&lang=de`. The query string preserves the identifier on reload and when changing languages.
+Galleries, news articles and services use reusable static detail pages. Example URLs include `gallery.html?id=design&lang=en`, `article.html?id=by-the-water&lang=en` and `service.html?id=painting-classes&lang=de`. The query string preserves the identifier on reload and when changing languages. The four original URLs under `galleries/` pass their existing IDs to the same gallery renderer, so they continue to work after a rename or reorder on static hosting.
 
 Sveltia's rich-text field stores HTML. Public rendering copies permitted structural elements from an inert template and validates links and image paths. Public pages load no CMS scripts.
 
@@ -626,7 +616,7 @@ Prototype v2 includes:
 
 - The bilingual site and its established paper texture, palette, typography and navigation.
 - One artist-selected homepage artwork, with Selected Collections below it.
-- Four portfolio gallery pages with independent covers, optional captions and responsive masonry.
+- CMS-managed portfolio galleries with independent covers, optional captions and responsive masonry.
 - A fullscreen viewer with fitted image sizing, 130% zoom, panning and keyboard and touch support.
 - An ordered Services & Commissions overview and dynamic bilingual service pages.
 - News overview and individual articles, About Me and Contact.

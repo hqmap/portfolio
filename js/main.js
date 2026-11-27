@@ -6,7 +6,6 @@ import {renderArtworkSet} from './gallery.js';
 
 const page = document.body.dataset.page;
 const main = document.querySelector('main');
-const galleryIds = ['design', 'illustration', 'portraits', 'creative-projects'];
 const entryId = query.get('id');
 
 const link = (path, label, className) => el('a', {href: url(path), class: className}, label);
@@ -113,52 +112,62 @@ async function loadArtworks() {
   return new Map(works.map(work => [work.id, work]));
 }
 
-async function loadGalleries() {
-  return Promise.all(galleryIds.map(async id => ({id, entry: await load('galleries/' + id)})));
-}
-
 function galleryWorks(entry, works) {
   return items(shared(entry).works).map(item => works.get(item?.artwork)).filter(Boolean);
 }
 
 function categoryPreviews(galleries, works, compact = false) {
-  return el('div', {class: compact ? 'collections compact' : 'collections'}, ...galleries.map(({id, entry}) => {
-    const {cover, coverImage} = shared(entry);
+  return el('div', {class: compact ? 'collections compact' : 'collections'}, ...galleries.map(entry => {
+    const {id, cover, coverImage} = shared(entry);
     const {title, coverAlt} = localized(entry);
-    const candidates = [{image: coverImage, alt: coverAlt}, works.get(cover), ...galleryWorks(entry, works)];
-    return el('a', {href: url('galleries/' + id)}, previewImage(candidates),
+    const coverArtwork = works.get(cover);
+    const artworkAlt = !text(coverImage) && text(coverAlt);
+    const candidates = [
+      {image: coverImage, alt: coverAlt},
+      coverArtwork && {...coverArtwork, alt: artworkAlt || coverArtwork.alt},
+      ...galleryWorks(entry, works)
+    ];
+    return el('a', {href: url('gallery', {id})}, previewImage(candidates),
       el(compact ? 'h3' : 'h2', {class: 'preview-title'}, title)
     );
   }));
 }
 
 async function renderHome() {
-  const [home, works, galleries] = await Promise.all([load('home'), loadArtworks(), loadGalleries()]);
+  const [home, works, galleries] = await Promise.all([load('home'), loadArtworks(), load('galleries')]);
   const {pageTitle, selected, portfolioLink} = localized(home);
   const featured = works.get(shared(home).featured) || works.values().next().value;
   const hero = el('section', {class: 'hero wrap'}, el('h1', {class: 'visually-hidden'}, pageTitle));
   main.append(hero, el('section', {class: 'selected'}, el('div', {class: 'wrap'},
     el('div', {class: 'section-bar'}, el('h2', {}, selected), link('portfolio', portfolioLink, 'text-link')),
-    categoryPreviews(galleries, works, true)
+    categoryPreviews(galleries.slice(0, 4), works, true)
   )));
   if (featured) renderArtworkSet(hero, [featured], true);
   return pageTitle;
 }
 
 async function renderPortfolio() {
-  const [data, works, galleries] = await Promise.all([load('portfolio'), loadArtworks(), loadGalleries()]);
+  const [data, works, galleries] = await Promise.all([load('portfolio'), loadArtworks(), load('galleries')]);
   const {title, intro} = localized(data);
   main.append(el('section', {class: 'wrap interior'}, sectionTitle(title, intro), categoryPreviews(galleries, works)));
   return title;
 }
 
 async function renderGallery() {
-  const [portfolio, entry, works] = await Promise.all([load('portfolio'), load('galleries/' + page), loadArtworks()]);
+  const [portfolio, galleries, works] = await Promise.all([load('portfolio'), load('galleries'), loadArtworks()]);
+  const id = document.body.dataset.galleryId ?? entryId;
+  const entry = id && galleries.find(item => shared(item).id === id);
+  const section = el('section', {class: 'wrap interior'}, back('portfolio', localized(portfolio).title));
+  main.append(section);
+  if (!entry) {
+    const unavailable = ui('Gallery unavailable', 'Galerie nicht verfügbar');
+    section.append(sectionTitle(unavailable));
+    return unavailable;
+  }
+
   const {title, description} = localized(entry);
   const gallery = el('div', {class: 'gallery'});
-  main.append(el('section', {class: 'wrap interior'}, back('portfolio', localized(portfolio).title),
-    sectionTitle(title, description), gallery
-  ));
+  section.append(sectionTitle(title, description), gallery);
   const ordered = galleryWorks(entry, works);
   if (ordered.length) renderArtworkSet(gallery, ordered);
   else gallery.append(el('p', {}, ui('No artworks have been added yet.', 'Hier wurden noch keine Werke hinzugefügt.')));
@@ -272,15 +281,14 @@ async function renderNews() {
 
 async function render() {
   const [settings, contact] = await Promise.all([load('settings'), load('contact')]);
-  const isGallery = galleryIds.includes(page);
   let active = page;
-  if (isGallery) active = 'portfolio';
+  if (page === 'gallery') active = 'portfolio';
   if (page === 'article') active = 'news';
   if (page === 'service') active = 'services';
   renderChrome(settings, contact, active);
 
   let title;
-  if (isGallery) title = await renderGallery();
+  if (page === 'gallery') title = await renderGallery();
   else if (page === 'index') title = await renderHome();
   else if (page === 'portfolio') title = await renderPortfolio();
   else if (page === 'services' || page === 'service') title = await renderServices();

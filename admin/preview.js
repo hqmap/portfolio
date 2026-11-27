@@ -55,15 +55,18 @@
 
   function gallery(props) {
     const entry = data(props);
-    const cover = entry.coverImage ? {image: entry.coverImage, alt: entry.coverAlt}
-      : related(props, ['cover'], entry.cover);
     const works = (entry.works ?? []).map(({artwork: id}, index) => ({
       work: related(props, ['works', 'artwork'], id), index
     })).filter(({work}) => work);
+    const coverArtwork = related(props, ['cover'], entry.cover);
+    const artworkAlt = (!clean(entry.coverImage) && clean(entry.coverAlt)) || coverArtwork?.alt;
+    const cover = image(props, entry.coverImage, entry.coverAlt, 'coverImage')
+      ?? image(props, coverArtwork?.image, artworkAlt, 'cover')
+      ?? works.map(({work, index}) => image(props, work.image, work.alt, `works.${index}.artwork`)).find(Boolean);
     return html`<article className="cms-preview">
       <h1 ...${marked('title')}>${entry.title}</h1>
       ${entry.description && html`<p ...${marked('description')} className="cms-intro">${entry.description}</p>`}
-      ${cover && image(props, cover.image, cover.alt, entry.coverImage ? 'coverImage' : 'cover')}
+      ${cover}
       <div className="cms-gallery">${works.map(({work, index}) => html`<div key=${index}>
         ${artwork(props, work, `works.${index}.artwork`)}
       </div>`)}</div>
@@ -82,9 +85,7 @@
       <p className="text-link" ...${marked('portfolioLink')}>${entry.portfolioLink}</p>
     </article>`;
   });
-  for (const name of ['design', 'illustration', 'portraits', 'creative-projects']) {
-    CMS.registerPreviewTemplate(name, gallery);
-  }
+  CMS.registerPreviewTemplate('galleries', gallery);
   for (const name of ['about', 'contact', 'news', 'services', 'portfolio', 'news-overview', 'services-overview']) {
     CMS.registerPreviewTemplate(name, editorial);
   }
