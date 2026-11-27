@@ -254,7 +254,9 @@ The artist adds artworks to a gallery by selecting references to stable artwork 
 
 **Expanded artwork viewer**
 
-The fullscreen viewer fits the full optimized image inside the space available after its margins, caption and controls. It preserves image proportions, displays the entire artwork and can enlarge small sources. The Close button, previous and next controls, arrow-key navigation, Escape, focus restoration and touch swipes support navigation.
+The fullscreen viewer fits the full optimized image in the space left by its controls and caption. It preserves image proportions, displays the entire artwork and can enlarge small sources. A desktop bottom row places the title on the left, previous and next arrows at the viewport center, and medium, year and dimensions on the right. Caption fields wrap in their own columns, and an extended description can continue below the row. Oversized fields support keyboard and touch scrolling. A single artwork omits the arrows, and empty caption fields take up no space.
+
+The viewer uses 6 px of top and bottom padding, reduced to 4 px on short landscape screens, with room for device safe areas. Close and navigation buttons have borderless styling, hover feedback and visible keyboard focus, with targets of at least 44 × 44 px. Arrow keys, Escape, focus restoration and touch swipes support navigation.
 
 Pressing or tapping the artwork toggles a 130% zoom relative to its fitted size. The selected point guides the zoom and the visitor can drag to pan the enlarged image. Controls and caption remain at their normal size. Swipes navigate in normal viewing mode. Dragging while zoomed pans the image and preserves the zoom state. Closing the viewer or changing artworks resets the zoom and pan.
 
@@ -490,7 +492,7 @@ Additional requirements:
 - Easily accessible language selection.
 - Support for portrait and landscape device orientations.
 - Responsive image and text sizing.
-- Tap the artwork to toggle zoom on touch screens. In landscape on short screens, viewer controls share the top row to make space for the artwork.
+- Tap the artwork to toggle zoom on touch screens. On narrow portrait screens, the caption stays close to the image and arrows sit below it. On short landscape screens, arrows sit at the top left and Close sits at the top right.
 
 ## 10. Technical architecture
 
