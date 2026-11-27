@@ -202,7 +202,7 @@ The footer should remain visually secondary to the main content.
 
 ### 5.1. Homepage
 
-The homepage opens with one large, artist-selected artwork inside the existing content margins. It uses the available width for landscape images and keeps square and portrait images comfortably sized. Images retain their proportions and can be opened in the artwork viewer. When artwork information is available, it appears below the image in the same caption style as the galleries.
+The homepage opens with one large, artist-selected artwork inside the existing content margins. It uses the available width for landscape images and keeps square and portrait images comfortably sized. Images retain their proportions and can be opened in the artwork viewer. When artwork information is available, it appears below the image in the same caption style as the galleries. The hero uses 20 px of top padding below the header, reduced to 14 px at viewport widths of 650 px and below.
 
 Selected Collections remains below the featured artwork and uses the same category covers as the Portfolio overview. The header, language switcher, paper background and footer frame the artwork.
 
