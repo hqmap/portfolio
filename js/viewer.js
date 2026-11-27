@@ -1,8 +1,12 @@
 import {el, picture, text, ui} from './content.js';
 
-const ZOOM_SCALE = 1.3;
+const DESKTOP_ZOOM_SCALE = 1.3;
+const MOBILE_ZOOM_SCALE = 1.5;
 const DRAG_THRESHOLD = 7;
-const SWIPE_THRESHOLD = 72;
+const HORIZONTAL_SWIPE_THRESHOLD = 40;
+const VERTICAL_SWIPE_THRESHOLD = 72;
+const FLICK_MIN_DISTANCE = 20;
+const FLICK_MIN_VELOCITY = 0.5; // CSS pixels per millisecond.
 const AXIS_RATIO = 1.2;
 const SLIDE_DURATION = 180;
 
@@ -13,11 +17,18 @@ function swipeAxis(dx, dy) {
   if (y > x * AXIS_RATIO) return 'y';
 }
 
+function completesHorizontalSwipe(dx, elapsed) {
+  const distance = Math.abs(dx);
+  return distance >= HORIZONTAL_SWIPE_THRESHOLD
+    || (distance >= FLICK_MIN_DISTANCE && elapsed > 0 && distance / elapsed >= FLICK_MIN_VELOCITY);
+}
+
 function translate(x, y = 0) {
   return `translate(${x}px, ${y}px)`;
 }
 
 export function createViewer(works, caption) {
+  const hasSteps = works.length > 1;
   const close = el('button', {type: 'button', autofocus: ''}, ui('Close', 'Schließen'), ' ×');
   const prev = el('button', {type: 'button', 'aria-label': ui('Previous work', 'Vorheriges Werk')}, '←');
   const next = el('button', {type: 'button', 'aria-label': ui('Next work', 'Nächstes Werk')}, '→');
@@ -26,8 +37,10 @@ export function createViewer(works, caption) {
     'aria-pressed': 'false', hidden: ''
   });
   const adjacent = el('div', {class: 'viewer-adjacent', 'aria-hidden': 'true', hidden: ''});
-  const viewport = el('div', {class: 'viewer-viewport'}, adjacent, zoom);
-  const hasSteps = works.length > 1;
+  // The arrow buttons provide keyboard and screen-reader navigation.
+  const leftSide = hasSteps ? el('div', {class: 'viewer-side viewer-side-left', 'aria-hidden': 'true'}) : null;
+  const rightSide = hasSteps ? el('div', {class: 'viewer-side viewer-side-right', 'aria-hidden': 'true'}) : null;
+  const viewport = el('div', {class: 'viewer-viewport'}, adjacent, zoom, leftSide, rightSide);
   const steps = hasSteps ? el('div', {class: 'steps'}, prev, next) : null;
   const stage = el('figure', {class: 'viewer-stage'}, viewport, steps);
   const status = el('span', {class: 'visually-hidden', 'aria-live': 'polite'});
@@ -36,6 +49,7 @@ export function createViewer(works, caption) {
   );
 
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+  const coarsePointer = matchMedia('(pointer: coarse)');
   const wrap = index => (index + works.length) % works.length;
   let opener;
   let current = 0;
@@ -45,7 +59,7 @@ export function createViewer(works, caption) {
   let details;
   let fitted;
   let position;
-  let zoomed = false;
+  let zoomScale = 1;
   let pointer;
   let animations;
   let dragX = 0;
@@ -72,9 +86,8 @@ export function createViewer(works, caption) {
   }
 
   function place(left, top) {
-    const scale = zoomed ? ZOOM_SCALE : 1;
-    const width = fitted.width * scale;
-    const height = fitted.height * scale;
+    const width = fitted.width * zoomScale;
+    const height = fitted.height * zoomScale;
     const {viewWidth, viewHeight} = fitted;
     const clamp = (offset, size, available) => size > available
       ? Math.min(0, Math.max(available - size, offset)) : (available - size) / 2;
@@ -110,13 +123,13 @@ export function createViewer(works, caption) {
     const width = naturalWidth * scale;
     const height = naturalHeight * scale;
     fitted = {width, height, left: (viewWidth - width) / 2, top: (viewHeight - height) / 2, viewWidth, viewHeight};
-    const zoomScale = zoomed ? ZOOM_SCALE : 1;
     place((viewWidth - width * zoomScale) / 2, (viewHeight - height * zoomScale) / 2);
+    viewport.style.setProperty('--viewer-side-width', `${Math.max(0, fitted.left)}px`);
     zoom.hidden = false;
   }
 
   function resetZoom() {
-    zoomed = false;
+    zoomScale = 1;
     fitted = undefined;
     zoom.setAttribute('aria-pressed', 'false');
   }
@@ -247,9 +260,10 @@ export function createViewer(works, caption) {
     destination = undefined;
     endDrag();
     clearMotion();
-    zoomed = !zoomed;
-    zoom.setAttribute('aria-pressed', String(zoomed));
-    if (!zoomed) {
+    const deviceScale = coarsePointer.matches ? MOBILE_ZOOM_SCALE : DESKTOP_ZOOM_SCALE;
+    zoomScale = zoomScale === 1 ? deviceScale : 1;
+    zoom.setAttribute('aria-pressed', String(zoomScale > 1));
+    if (zoomScale === 1) {
       place(fitted.left, fitted.top);
       return;
     }
@@ -257,7 +271,7 @@ export function createViewer(works, caption) {
     const bounds = viewport.getBoundingClientRect();
     const x = clientX == null ? fitted.viewWidth / 2 : clientX - bounds.left;
     const y = clientY == null ? fitted.viewHeight / 2 : clientY - bounds.top;
-    place(x - (x - fitted.left) * ZOOM_SCALE, y - (y - fitted.top) * ZOOM_SCALE);
+    place(x - (x - fitted.left) * zoomScale, y - (y - fitted.top) * zoomScale);
   }
 
   zoom.addEventListener('click', event => {
@@ -271,7 +285,7 @@ export function createViewer(works, caption) {
     if (!destination?.failed) destination = undefined;
     clearMotion();
     pointer = {id: event.pointerId, x: event.clientX, y: event.clientY, position, moved: false,
-      startedOnImage: zoom.contains(document.elementFromPoint(event.clientX, event.clientY))};
+      target: event.target, startTime: event.timeStamp};
     viewport.setPointerCapture(event.pointerId);
   });
 
@@ -279,7 +293,7 @@ export function createViewer(works, caption) {
     const dx = event.clientX - pointer.x;
     const dy = event.clientY - pointer.y;
     pointer.moved ||= Math.hypot(dx, dy) >= DRAG_THRESHOLD;
-    if (pointer.moved && zoomed) {
+    if (pointer.moved && zoomScale > 1) {
       viewport.classList.add('dragging');
       place(pointer.position.left + dx, pointer.position.top + dy);
     } else if (pointer.moved && event.pointerType !== 'mouse') {
@@ -324,15 +338,20 @@ export function createViewer(works, caption) {
   viewport.addEventListener('pointerup', event => {
     if (pointer?.id !== event.pointerId) return;
     const {dx, dy} = trackPointer(event);
-    const tappedImage = !pointer.moved && pointer.startedOnImage
-      && zoom.contains(document.elementFromPoint(event.clientX, event.clientY));
-    const axis = pointer.axis === swipeAxis(dx, dy) ? pointer.axis : undefined;
+    const target = pointer.moved ? null : document.elementFromPoint(event.clientX, event.clientY);
+    const tappedImage = zoom.contains(pointer.target) && zoom.contains(target);
+    const clickedSide = target && target === pointer.target && event.pointerType === 'mouse'
+      && (target === leftSide || target === rightSide);
+    const axis = zoomScale === 1 && pointer.axis === swipeAxis(dx, dy) ? pointer.axis : undefined;
+    const elapsed = event.timeStamp - pointer.startTime;
     endDrag();
     if (tappedImage) {
       toggleZoom(event.clientX, event.clientY);
-    } else if (axis === 'y' && Math.abs(dy) >= SWIPE_THRESHOLD) {
-      closeViewer();
-    } else if (axis === 'x' && hasSteps && Math.abs(dx) >= SWIPE_THRESHOLD) {
+    } else if (clickedSide) {
+      navigate(target === leftSide ? -1 : 1);
+    } else if (axis === 'y' && Math.abs(dy) >= VERTICAL_SWIPE_THRESHOLD) {
+      closeViewer(true);
+    } else if (axis === 'x' && hasSteps && completesHorizontalSwipe(dx, elapsed)) {
       navigate(dx < 0 ? 1 : -1, dragX);
     } else {
       restoreDrag();
@@ -350,9 +369,15 @@ export function createViewer(works, caption) {
     restoreDrag();
   }
 
-  function closeViewer() {
+  function closeViewer(fromPointer) {
     endDrag();
     clearMotion();
+    if (fromPointer && opener) {
+      // Native dialog restoration may carry the previous :focus-visible state.
+      const trigger = opener;
+      trigger.classList.add('viewer-pointer-focus');
+      trigger.addEventListener('blur', () => trigger.classList.remove('viewer-pointer-focus'), {once: true});
+    }
     dialog.close();
   }
   viewport.addEventListener('pointercancel', event => {
@@ -362,7 +387,7 @@ export function createViewer(works, caption) {
     if (event.target === viewport && pointer?.id === event.pointerId) cancelDrag();
   });
 
-  close.addEventListener('click', closeViewer);
+  close.addEventListener('click', event => closeViewer(event.detail > 0));
   prev.addEventListener('click', () => navigate(-1));
   next.addEventListener('click', () => navigate(1));
   dialog.addEventListener('close', () => {
@@ -377,7 +402,10 @@ export function createViewer(works, caption) {
     opener?.focus({preventScroll: true});
     opener = undefined;
   });
+  // Arrow shortcuts leave pointer-initiated focus alone. Tab restores visible focus within the dialog.
+  dialog.addEventListener('pointerdown', () => dialog.classList.add('viewer-pointer-focus'));
   dialog.addEventListener('keydown', event => {
+    if (event.key === 'Tab') dialog.classList.remove('viewer-pointer-focus');
     if (!hasSteps || event.altKey || event.ctrlKey || event.metaKey) return;
     if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
       event.preventDefault();
@@ -393,12 +421,15 @@ export function createViewer(works, caption) {
 
   return {
     dialog,
-    open(index, trigger) {
+    open(index, trigger, fromPointer) {
       opener = trigger;
       endDrag();
       clearMotion();
       destination = undefined;
       nearby.clear();
+      dialog.classList.toggle('viewer-pointer-focus', fromPointer);
+      // Record the gallery trigger for native restoration in browsers that don't focus clicked buttons.
+      if (document.activeElement !== trigger) trigger.focus({preventScroll: true});
       dialog.showModal();
       show(index, prepare(index));
     }

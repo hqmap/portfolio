@@ -36,7 +36,7 @@ export function renderArtworkSet(container, works, featured = false) {
   const cards = works.map((work, index) => artworkCard(work, index, featured));
   const viewer = createViewer(works, artworkCaption);
   cards.forEach(({card, trigger}, index) => {
-    trigger.addEventListener('click', () => viewer.open(index, trigger));
+    trigger.addEventListener('click', event => viewer.open(index, trigger, event.detail > 0));
     container.append(card);
   });
   // The dialog sits outside the masonry container so it never occupies a column.
