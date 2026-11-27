@@ -69,11 +69,16 @@ function storedSize(image, pixelSize) {
   return {};
 }
 
-export function picture({image, alt, pixelSize}, eager = false) {
+export function picture({image, alt, pixelSize, protectArtwork}, eager = false) {
   const {width, height} = storedSize(image, pixelSize);
   const img = el('img', {
     width, height, alt: text(alt), loading: eager ? 'eager' : 'lazy', decoding: 'async'
   });
+  if (protectArtwork) {
+    img.draggable = false;
+    img.setAttribute('data-protected-artwork', '');
+    img.addEventListener('contextmenu', event => event.preventDefault());
+  }
   // A replacement at the same path can also have a different intrinsic size.
   img.addEventListener('load', () => {
     if (img.naturalWidth && img.naturalHeight) {
@@ -90,7 +95,7 @@ export function picture({image, alt, pixelSize}, eager = false) {
 export function artwork(entry) {
   const {id, image, year, dimensions, pixelSize} = shared(entry);
   const {title, medium, description, alt} = localized(entry);
-  return {id, image, year, dimensions, pixelSize, title, medium, description, alt};
+  return {id, image, year, dimensions, pixelSize, title, medium, description, alt, protectArtwork: true};
 }
 
 const richTags = new Set([

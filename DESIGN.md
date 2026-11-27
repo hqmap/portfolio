@@ -464,6 +464,12 @@ Original high-resolution artwork photographs should be archived separately rathe
 
 The site uses one optimized file per artwork. The artist can upload a scan without entering pixel dimensions or creating thumbnails.
 
+### Public artwork saving deterrents
+
+The public image renderer marks Artwork Library images and portfolio covers as protected when it creates them, including cover fallbacks and images loaded by the fullscreen viewer. The marked images cancel their own context-menu events and set `draggable="false"`. CSS limits selection on those images and requests suppression of touch callouts with `-webkit-touch-callout: none` in browsers that support it.
+
+Sveltia CMS uses its own image previews and asset controls. The public behavior deters casual saving. Visitors can still download the served image files or take screenshots.
+
 ## 9. Responsive design
 
 The website should be designed for screen widths ranging from approximately 320 pixels to large desktop displays.

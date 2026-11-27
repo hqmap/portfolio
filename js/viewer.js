@@ -52,7 +52,6 @@ export function createViewer(works, caption) {
 
   function prepare(index) {
     const image = picture(works[index], true);
-    image.draggable = false;
     const entry = {image, ready: false};
     entry.loaded = image.decode().then(() => {
       entry.ready = true;
