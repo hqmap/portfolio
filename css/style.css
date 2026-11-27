@@ -13,6 +13,7 @@ a:hover{color:var(--olive);text-decoration:underline;text-underline-offset:.25em
 button{font:inherit;color:inherit;cursor:pointer}
 :focus-visible{outline:2px solid #586a4b;outline-offset:4px}
 img{display:block;width:100%;height:auto}
+img[data-protected-artwork]{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
 figure,p,h1,h2,h3{margin:0}
 h1,h2,h3,.brand{font-family:var(--serif);font-weight:400;line-height:1.03}
 header{border-bottom:1px solid var(--rule);position:relative;z-index:1}

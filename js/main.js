@@ -142,7 +142,7 @@ function categoryPreviews(galleries, works, compact = false) {
     const coverArtwork = works.get(cover);
     const artworkAlt = !text(coverImage) && text(coverAlt);
     const candidates = [
-      {image: coverImage, alt: coverAlt},
+      {image: coverImage, alt: coverAlt, protectArtwork: true},
       coverArtwork && {...coverArtwork, alt: artworkAlt || coverArtwork.alt},
       ...galleryWorks(entry, works)
     ];

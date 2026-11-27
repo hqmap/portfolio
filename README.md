@@ -65,6 +65,10 @@ Uploaded image paths look like `/portfolio/images/name.webp` and resolve relativ
 
 Sveltia stores formatted text as HTML. The public renderer retains common editorial elements and checks link and image schemes while rebuilding the markup. The font licenses accompany the local WOFF2 files.
 
+## Artwork saving deterrents
+
+Public Artwork Library images and portfolio covers suppress the default image context menu and native image dragging. Supporting browsers also suppress the image callout on long press. The artist can still manage and download images in Sveltia CMS. These measures deter casual saving. Public image files remain downloadable and screenshots are still possible.
+
 ## Verify in a disposable copy
 
 The public pages can be served at `/portfolio/` and tested in a browser without signing in. For CMS edits, use a copy of the checkout and [Sveltia's local development workflow](https://sveltiacms.app/docs/workflows/local) in a supported Chromium browser. The [Test backend](https://sveltiacms.app/docs/backends/test) can also seed the site's JSON and images for a browser-only round trip. Keep the production config on the GitHub backend.
@@ -76,3 +80,5 @@ Follow public links on desktop and through the mobile menu. Switch languages on 
 Open an artwork in each language and check the viewer at desktop, portrait phone and landscape phone sizes. On desktop the title, centered arrows and metadata share a bottom row. On a portrait phone the caption sits below the image and the arrows stay at the bottom. On a short landscape screen the arrows and Close sit at the top.
 
 Check that horizontal swipes, arrows and arrow keys slide in the expected direction, short swipes return the artwork to center, and up and down swipes close fitted artwork even in a single-artwork viewer. Check tap-to-zoom, zoomed panning, long and empty captions, and focus restoration. Use network throttling to check that the previous artwork stays visible during loading. Check rapid and canceled gestures and repeat with reduced motion enabled. Verify touch behavior and orientation changes on iOS Safari and Chrome on Android with physical devices.
+
+Right-click and drag the featured artwork, portfolio covers, gallery images and viewer images. Check that ordinary text and links still open their context menus. Long-press artwork on iOS Safari and Chrome on Android. Device testing is needed to verify native mobile menus because desktop emulation tests web events and CSS, while the device controls the callout.
