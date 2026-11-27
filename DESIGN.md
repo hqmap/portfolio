@@ -258,7 +258,9 @@ The fullscreen viewer fits the full optimized image in the space left by its con
 
 The viewer uses 6 px of top and bottom padding, reduced to 4 px on short landscape screens, with room for device safe areas. Close and navigation buttons have borderless styling, hover feedback and visible keyboard focus, with targets of at least 44 × 44 px. Arrow keys, Escape, focus restoration and touch swipes support navigation.
 
-Pressing or tapping the artwork toggles a 130% zoom relative to its fitted size. The selected point guides the zoom and the visitor can drag to pan the enlarged image. Controls and caption remain at their normal size. Swipes navigate in normal viewing mode. Dragging while zoomed pans the image and preserves the zoom state. Closing the viewer or changing artworks resets the zoom and pan.
+Pressing or tapping the artwork toggles a 130% zoom relative to its fitted size. The selected point guides the zoom and the visitor can drag to pan the enlarged image. Controls and caption remain at their normal size. In fitted mode, a horizontal touch swipe navigates and a vertical touch swipe closes the viewer, including when it contains a single artwork. The gesture locks to a dominant axis and needs at least 72 CSS pixels of travel along it. While zoomed, drags pan the image. Closing the viewer or changing artworks resets the zoom and pan.
+
+Artwork follows fitted swipes and returns to center when a swipe falls short or is interrupted. Horizontal swipes, navigation buttons and arrow keys slide between works in around 180 ms. The viewer background and controls stay stationary. The current work stays visible while the requested image loads, and the viewer preloads its immediate neighbors. With reduced motion enabled, the viewer switches images as soon as they are ready and skips the swipe movement.
 
 ### 5.4. Services & Commissions
 
